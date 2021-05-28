@@ -8,20 +8,21 @@ class AddWorkoutForm extends StatefulWidget {
   static const routeName = '/AddWorkoutForm';
 
   @override
-  _AddWorkoutFormState createState() => _AddWorkoutFormState();
+  AddWorkoutFormState createState() => AddWorkoutFormState();
 }
 
-class _AddWorkoutFormState extends State<AddWorkoutForm> {
+class AddWorkoutFormState extends State<AddWorkoutForm> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController setsController = TextEditingController();
   final TextEditingController repsController = TextEditingController();
 
-  static Log defaultLog = Log(
-    exercise: Exercise(name: ''),
-    sets: 0,
-    reps: 0,
-  );
-  static List<Log> logsList = [defaultLog];
+  static Map<String, dynamic> defaultLog = {
+    'exerciseName': '',
+    'sets': 0,
+    'reps': 0
+  };
+
+  static List<Map<String, dynamic>> logsList = [defaultLog];
 
   @override
   void dispose() {
@@ -34,13 +35,12 @@ class _AddWorkoutFormState extends State<AddWorkoutForm> {
   void _save(context) {
     final Function addWorkout = ModalRoute.of(context)!.settings.arguments as Function;
     addWorkout(logs: logsList);
-    Navigator.of(context).pop();
     logsList = [defaultLog];
+    Navigator.of(context).pop();
   }
 
   List<Widget> _getExercises() {
     List<Widget> logsInputFieldsList = [];
-    print(logsList);
     for(int i = 0; i < logsList.length; i++) {
       logsInputFieldsList.add(
         Padding(
@@ -63,71 +63,6 @@ class _AddWorkoutFormState extends State<AddWorkoutForm> {
     }
     return logsInputFieldsList;
   }
-
-  // Widget exerciseNameInput(controller, context, index) {
-  //   return Padding(
-  //     padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-  //     child: TextField(
-  //       controller: controller,
-  //       style: Theme
-  //           .of(context)
-  //           .textTheme
-  //           .bodyText2,
-  //       decoration: InputDecoration(
-  //         labelStyle: Theme
-  //             .of(context)
-  //             .textTheme
-  //             .bodyText2,
-  //         labelText: 'Exercise Name',
-  //         border: OutlineInputBorder(
-  //           borderRadius: BorderRadius.circular(0.0),
-  //         ),
-  //       ),
-  //       onChanged: (v) => logsList[index].exercise!.name = v,
-  //     ),
-  //   );
-  // }
-
-  // Widget setsAndRepsInput(_setsController, _repsController, context, index) {
-  //   return Padding(
-  //     padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       children: [
-  //         Container(
-  //           width: 100.0,
-  //           child: TextField(
-  //             keyboardType: TextInputType.number,
-  //             controller: _setsController,
-  //             maxLength: 2,
-  //             decoration: InputDecoration(
-  //               border: OutlineInputBorder(
-  //                 borderRadius: BorderRadius.circular(0.0),
-  //               ),
-  //             ),
-  //             onChanged: (v) => logsList[index].sets = int.parse(v),
-  //           ),
-  //         ),
-  //         Text('sets of'),
-  //         Container(
-  //           width: 100.0,
-  //           child: TextField(
-  //             keyboardType: TextInputType.number,
-  //             controller: _repsController,
-  //             maxLength: 2,
-  //             decoration: InputDecoration(
-  //               border: OutlineInputBorder(
-  //                 borderRadius: BorderRadius.circular(0.0),
-  //               ),
-  //             ),
-  //             onChanged: (v) => logsList[index].reps = int.parse(v),
-  //           ),
-  //         ),
-  //         Text('reps'),
-  //       ],
-  //     )
-  //   );
-  // }
 
   Widget exerciseInput() {
     return Padding(

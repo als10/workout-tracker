@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:workout_tracker/models/Log.dart';
 
-class ExerciseListItem extends StatelessWidget {
+class LogListItem extends StatelessWidget {
   final Log log;
 
-  const ExerciseListItem({
+  const LogListItem({
     required this.log
   });
 

@@ -17,7 +17,21 @@ class _WorkoutsListState extends State<WorkoutsList> {
 
   void getAllWorkouts() async {
     await dbHelper.initializeDB();
-    workouts = await dbHelper.fetchWorkouts();
+    for (Workout workout in (await dbHelper.fetchWorkouts())) {
+      List<Log> logs = await dbHelper.fetchLogs(workoutId: workout.id);
+      for (Log log in logs) {
+        Exercise exercise = (await dbHelper.fetchExercises(id: log.exerciseId))[0];
+        log.setExercise(exercise);
+      }
+      workout.setLogs(logs);
+      workouts.add(workout);
+    }
+    for (Workout workout in workouts) {
+      print('${workout.name} ${workout.dateTime} ${workout.id}');
+      for (Log log in workout.logs) {
+        print('${log.sets} ${log.reps} ${log.exercise.name}');
+      }
+    }
     setState((){});
   }
 
@@ -29,21 +43,26 @@ class _WorkoutsListState extends State<WorkoutsList> {
     getAllWorkouts();
   }
 
-  void addWorkout({String? workoutName, List<Log>? logs}) async {
-    Workout newWorkout = await dbHelper.insertWorkout(Workout(name: workoutName));
+  void addWorkout({String? workoutName, List<Map<String, dynamic>>? logs}) async {
+    Workout newWorkout = await dbHelper.insertWorkout(Workout(name: workoutName ?? ''));
 
     List<Log> newLogs = [];
-    (logs ?? []).forEach((Log log) async {
-      Exercise newExercise = await dbHelper.insertExercise(Exercise(name: log.exercise.name));
-      log.workout = newWorkout;
-      log.exercise = newExercise;
-      dbHelper.insertLog(log).then((l) => newLogs.add(l));
+    (logs ?? []).forEach((Map<String, dynamic> log) async {
+      Exercise exercise = await dbHelper.insertExercise(Exercise(name: log['exerciseName']));
+      Log newLog = await dbHelper.insertLog(Log(
+        workoutId: newWorkout.id,
+        exerciseId: exercise.id,
+        sets: log['sets'],
+        reps: log['reps']
+      ));
+      newLog.setExercise(exercise);
+      newLogs.add(newLog);
     });
 
-    setState(() {
-      newWorkout.logs = newLogs;
-      workouts.add(newWorkout);
-    });
+    newWorkout.setLogs(newLogs);
+    workouts.add(newWorkout);
+
+    setState((){});
   }
 
   void _navigateToAddWorkout(BuildContext context) {

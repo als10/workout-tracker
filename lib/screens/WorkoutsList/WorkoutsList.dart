@@ -35,10 +35,10 @@ class _WorkoutsListState extends State<WorkoutsList> {
         await dbHelper.insertWorkout(Workout(name: workoutName ?? ''));
 
     List<Log> newLogs = [];
-    (logs ?? []).forEach((Map<String, dynamic> log) async {
+    for (Map<String, dynamic> log in (logs ?? [])) {
       if (log['exerciseName'] != '') {
         Exercise exercise =
-            await dbHelper.insertExercise(Exercise(name: log['exerciseName']));
+          await dbHelper.insertExercise(Exercise(name: log['exerciseName']));
         Log newLog = await dbHelper.insertLog(Log(
             workoutId: newWorkout.id,
             exerciseId: exercise.id,
@@ -47,12 +47,14 @@ class _WorkoutsListState extends State<WorkoutsList> {
         newLog.exercise = exercise;
         newLogs.add(newLog);
       }
-    });
+    }
 
     newWorkout.logs = newLogs;
-    workouts.add(newWorkout);
+    print(newLogs.length);
 
-    setState(() {});
+    setState(() {
+      workouts.add(newWorkout);
+    });
   }
 
   void _navigateToAddWorkout(BuildContext context) {
@@ -73,6 +75,7 @@ class _WorkoutsListState extends State<WorkoutsList> {
         padding: EdgeInsets.symmetric(vertical: 8.0),
         children: workouts.map((Workout workout) {
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               WorkoutListItem(workout: workout),
               Divider(),

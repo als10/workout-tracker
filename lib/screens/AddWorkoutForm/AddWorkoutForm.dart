@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:workout_tracker/models/Exercise.dart';
-import 'package:workout_tracker/models/Log.dart';
 import 'package:workout_tracker/screens/AddWorkoutForm/components/LogInputs.dart';
 
 class AddWorkoutForm extends StatefulWidget {
@@ -12,17 +10,25 @@ class AddWorkoutForm extends StatefulWidget {
 }
 
 class AddWorkoutFormState extends State<AddWorkoutForm> {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController setsController = TextEditingController();
-  final TextEditingController repsController = TextEditingController();
+  late final TextEditingController nameController;
+  late final TextEditingController setsController;
+  late final TextEditingController repsController;
 
-  static Map<String, dynamic> defaultLog = {
+  static const Map<String, dynamic> defaultLog = {
     'exerciseName': '',
     'sets': 0,
     'reps': 0
   };
 
   static List<Map<String, dynamic>> logsList = [defaultLog];
+
+  @override
+  void initState() {
+    nameController = TextEditingController();
+    setsController = TextEditingController();
+    repsController = TextEditingController();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -33,29 +39,40 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
   }
 
   void _save(context) {
-    final Function addWorkout = ModalRoute.of(context)!.settings.arguments as Function;
+    final Function addWorkout =
+        ModalRoute.of(context)!.settings.arguments as Function;
     addWorkout(logs: logsList);
     logsList = [defaultLog];
     Navigator.of(context).pop();
   }
 
+  void changeLog(
+      {required int index, String? exerciseName, int? sets, int? reps}) {
+    logsList[index] = {
+      ...logsList[index],
+      if (exerciseName != null) 'exerciseName': exerciseName,
+      if (sets != null) 'sets': sets,
+      if (reps != null) 'reps': reps
+    };
+  }
+
   List<Widget> _getExercises() {
     List<Widget> logsInputFieldsList = [];
-    for(int i = 0; i < logsList.length; i++) {
+    for (int i = 0; i < logsList.length; i++) {
       logsInputFieldsList.add(
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 16.0),
           child: Column(
             children: [
-              LogInputs(logsList, i),
+              LogInputs(i, changeLog),
               if (logsList.length > 1)
                 ElevatedButton(
-                onPressed: () {
-                  logsList.removeAt(i);
-                  setState((){});
-                },
-                child: Text('Remove exercise'),
-              ),
+                  onPressed: () {
+                    logsList.removeAt(i);
+                    setState(() {});
+                  },
+                  child: Text('Remove exercise'),
+                ),
             ],
           ),
         ),
@@ -74,8 +91,8 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
           Center(
             child: ElevatedButton(
               onPressed: () {
-                logsList.add(defaultLog);
-                setState((){});
+                logsList = [...logsList, defaultLog];
+                setState(() {});
               },
               child: Text('Add another exercise'),
             ),
@@ -91,7 +108,10 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
       appBar: AppBar(
         title: Text('Workout Name'),
         actions: [
-          IconButton(icon: Icon(Icons.save), onPressed: () => _save(context),)
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: () => _save(context),
+          )
         ],
       ),
       body: SingleChildScrollView(

@@ -77,7 +77,12 @@ class DatabaseHelper {
           )
         : await db.query('logs');
     return logsMapList
-      .map((Map<String, dynamic> log) => Log.fromMap(log))
+      .map((Map<String, dynamic> logMap) {
+        Log log = Log.fromMap(logMap);
+        fetchExercises(id: log.exercise.id)
+          .then((List<Exercise> exercises) => log.exercise = exercises[0]);
+        return log;
+      })
       .toList();
   }
 
@@ -108,13 +113,14 @@ class DatabaseHelper {
     return (await fetchWorkouts(id: id))[0];
   }
 
-  Future<void> updateWorkout(Workout workout) async {
+  Future<Workout> updateWorkout(Workout workout) async {
     await db.update(
       'workouts',
       workout.toMap(),
       where: 'id = ?',
       whereArgs: [workout.id],
     );
+    return workout;
   }
 
   Future<void> deleteWorkout(Workout workout) async {
@@ -136,13 +142,14 @@ class DatabaseHelper {
     return (await fetchExercises(id: id))[0];
   }
 
-  Future<void> updateExercise(Exercise exercise) async {
+  Future<Exercise> updateExercise(Exercise exercise) async {
     await db.update(
       'exercises',
       exercise.toMap(),
       where: 'id = ?',
       whereArgs: [exercise.id],
     );
+    return exercise;
   }
 
   Future<void> deleteExercise(Exercise exercise) async {
@@ -161,13 +168,14 @@ class DatabaseHelper {
     return (await fetchLogs(id: id))[0];
   }
 
-  Future<void> updateLog(Log log) async {
+  Future<Log> updateLog(Log log) async {
     await db.update(
       'logs',
       log.toMap(),
       where: 'id = ?',
       whereArgs: [log.id],
     );
+    return log;
   }
 
   Future<void> deleteLog(Log log) async {

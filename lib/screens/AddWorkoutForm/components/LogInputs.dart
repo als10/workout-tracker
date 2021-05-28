@@ -1,22 +1,30 @@
 import 'package:flutter/cupertino.dart';
-import 'package:workout_tracker/models/Log.dart';
 import 'package:workout_tracker/screens/AddWorkoutForm/AddWorkoutForm.dart';
 import 'package:workout_tracker/screens/AddWorkoutForm/components/ExerciseNameInput.dart';
 import 'package:workout_tracker/screens/AddWorkoutForm/components/SetsAndRepsInput.dart';
 
 class LogInputs extends StatefulWidget {
   final int index;
+  final Function changeLog;
 
-  LogInputs(this.index);
+  LogInputs(this.index, this.changeLog);
 
   @override
   _LogInputsState createState() => _LogInputsState();
 }
 
 class _LogInputsState extends State<LogInputs> {
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController setsController = TextEditingController();
-  final TextEditingController repsController = TextEditingController();
+  late final TextEditingController nameController;
+  late final TextEditingController setsController;
+  late final TextEditingController repsController;
+
+  @override
+  void initState() {
+    nameController = TextEditingController();
+    setsController = TextEditingController();
+    repsController = TextEditingController();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -28,7 +36,7 @@ class _LogInputsState extends State<LogInputs> {
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> log = AddWorkoutFormState.logsList[widget.index];
+    Map<String, dynamic> log = AddWorkoutFormState.logsList[widget.index];
 
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       nameController.text = log['exerciseName'];
@@ -36,20 +44,19 @@ class _LogInputsState extends State<LogInputs> {
       repsController.text = log['reps'].toString();
     });
 
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ExerciseNameInput(
-            controller: nameController,
-            onChange: (v) => log['exerciseName'] = v,
-          ),
-          SetsAndRepsInput(
-            setsController: setsController,
-            repsController: repsController,
-            onSetsChange: (v) => log['sets'] = int.parse(v),
-            onRepsChange: (v) => log['reps'] = int.parse(v)
-          ),
-        ]
-    );
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      ExerciseNameInput(
+        controller: nameController,
+        onChange: (v) => widget.changeLog(index: widget.index, exerciseName: v),
+      ),
+      SetsAndRepsInput(
+        setsController: setsController,
+        repsController: repsController,
+        onSetsChange: (v) =>
+            widget.changeLog(index: widget.index, sets: int.parse(v)),
+        onRepsChange: (v) =>
+            widget.changeLog(index: widget.index, reps: int.parse(v)),
+      )
+    ]);
   }
 }

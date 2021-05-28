@@ -11,6 +11,27 @@ class WorkoutListItem extends StatelessWidget {
     required this.workout,
   });
 
+  String formatDate(String dateTime) {
+    if (dateTime == '') return '';
+    List<String> dateTimeList = dateTime.split(' ');
+    
+    List<String> months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+
+    List<String> dateList = dateTimeList[0].split('-');
+    String year = dateList[0];
+    String month = months[int.parse(dateList[1]) - 1];
+    String day = dateList[2];
+    
+    List<String> timeList = dateTimeList[1].split(':');
+    String hour = timeList[0];
+    String minute = timeList[1];
+    
+    return '$hour:$minute - $day $month, $year';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -19,7 +40,7 @@ class WorkoutListItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            workout.name == '' ? workout.dateTime : workout.name,
+            formatDate(workout.dateTime),
             style: Theme.of(context).textTheme.headline5
           ),
           Column(

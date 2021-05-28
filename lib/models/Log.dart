@@ -1,5 +1,4 @@
 import 'package:workout_tracker/models/Exercise.dart';
-import 'package:workout_tracker/models/Workout.dart';
 
 class Log {
   int id;

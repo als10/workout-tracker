@@ -1,16 +1,16 @@
-# workout_tracker
+# Workout Tracker
 
-Track your workouts with ease!
+## Description
+A mobile app to track all your workouts!
 
-## Getting Started
+## Demo
 
-This project is a starting point for a Flutter application.
+## Installation
+In order to run this application on your local device, you have to follow the instructions to [download and set up Flutter.](https://flutter.dev/docs/get-started/install)
 
-A few resources to get you started if this is your first Flutter project:
+## Usage
+Once Flutter is installed, you may run the app using the ```flutter run``` command from the root of the project.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Future Improvements
+1. Allow users to view detailed statistics about all the sets of exercises performed, which may be presented in a graph. 
+2. Improve the UI. 

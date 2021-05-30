@@ -14,7 +14,7 @@ class ExerciseNameInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-      child: TextField(
+      child: TextFormField(
         controller: controller,
         style: Theme
             .of(context)
@@ -31,6 +31,12 @@ class ExerciseNameInput extends StatelessWidget {
           ),
         ),
         onChanged: (v) => onChange(v),
+        validator: (String? v) {
+          if (v == null || v.isEmpty) {
+            return 'Please enter the exercise name';
+          }
+          return null;
+        },
       ),
     );
   }

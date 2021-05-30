@@ -11,11 +11,11 @@ class Exercise {
   Exercise.fromMap(
     Map<String, dynamic> res
   ) : id = res["id"],
-      name = res["name"];
+      name = res["name"].trim();
 
   Map<String, dynamic?> toMap() {
     return {
-      'name': name,
+      'name': name.trim(),
     };
   }
 }

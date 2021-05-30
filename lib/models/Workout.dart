@@ -18,13 +18,13 @@ class Workout {
   Workout.fromMap(
     Map<String, dynamic> res
   ) : id = res["id"],
-      name = res["name"],
-      dateTime = res["dateTime"];
+      name = res["name"].trim(),
+      dateTime = res["dateTime"].trim();
 
   Map<String, dynamic?> toMap() {
     return {
-      'name': name,
-      if (dateTime != '') 'dateTime': dateTime
+      'name': name.trim(),
+      if (dateTime != '') 'dateTime': dateTime.trim()
     };
   }
 }

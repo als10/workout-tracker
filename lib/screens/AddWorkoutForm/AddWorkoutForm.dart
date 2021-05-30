@@ -22,6 +22,8 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
 
   static List<Map<String, dynamic>> logsList = [defaultLog];
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     nameController = TextEditingController();
@@ -39,11 +41,13 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
   }
 
   void _save(context) {
-    final Function addWorkout =
-        ModalRoute.of(context)!.settings.arguments as Function;
-    addWorkout(logs: logsList);
-    logsList = [defaultLog];
-    Navigator.of(context).pop();
+    if (_formKey.currentState!.validate()) {
+      final Function addWorkout =
+          ModalRoute.of(context)!.settings.arguments as Function;
+      addWorkout(logs: logsList);
+      logsList = [defaultLog];
+      Navigator.of(context).pop();
+    }
   }
 
   void changeLog(
@@ -83,7 +87,7 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
 
   Widget exerciseInput() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+      padding: EdgeInsets.only(bottom: 12.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -91,8 +95,10 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
           Center(
             child: ElevatedButton(
               onPressed: () {
-                logsList = [...logsList, defaultLog];
-                setState(() {});
+                if (_formKey.currentState!.validate()) {
+                  logsList = [...logsList, defaultLog];
+                  setState(() {});
+                }
               },
               child: Text('Add another exercise'),
             ),
@@ -115,9 +121,12 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
         ],
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: exerciseInput(),
+        child: Form(
+          key: _formKey,
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: exerciseInput(),
+          ),
         ),
       ),
     );

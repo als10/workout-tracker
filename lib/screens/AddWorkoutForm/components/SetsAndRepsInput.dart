@@ -23,7 +23,7 @@ class SetsAndRepsInput extends StatelessWidget {
           children: [
             Container(
               width: 100.0,
-              child: TextField(
+              child: TextFormField(
                 keyboardType: TextInputType.number,
                 controller: setsController,
                 maxLength: 2,
@@ -33,12 +33,18 @@ class SetsAndRepsInput extends StatelessWidget {
                   ),
                 ),
                 onChanged: (v) => onSetsChange(v),
+                validator: (String? v) {
+                  if (v == null || v.isEmpty || int.parse(v) == 0) {
+                    return '';
+                  }
+                  return null;
+                },
               ),
             ),
             Text('sets of'),
             Container(
               width: 100.0,
-              child: TextField(
+              child: TextFormField(
                 keyboardType: TextInputType.number,
                 controller: repsController,
                 maxLength: 2,
@@ -48,6 +54,12 @@ class SetsAndRepsInput extends StatelessWidget {
                   ),
                 ),
                 onChanged: (v) => onRepsChange(v),
+                validator: (String? v) {
+                  if (v == null || v.isEmpty || int.parse(v) == 0) {
+                    return '';
+                  }
+                  return null;
+                },
               ),
             ),
             Text('reps'),

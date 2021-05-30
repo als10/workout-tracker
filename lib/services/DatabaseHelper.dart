@@ -30,7 +30,7 @@ class DatabaseHelper {
           reps INTEGER NOT NULL DEFAULT 0,
           workoutId INTEGER NOT NULL,
           exerciseId INTEGER NOT NULL,
-          FOREIGN KEY (workoutId) REFERENCES workouts (id),
+          FOREIGN KEY (workoutId) REFERENCES workouts (id) ON DELETE CASCADE,
           FOREIGN KEY (exerciseId) REFERENCES exercises (id)
         )''');
   }
@@ -46,7 +46,10 @@ class DatabaseHelper {
 
   Future<List<Workout>> fetchWorkouts({id}) async {
     List<Map<String, dynamic>> workoutsMapList = id == null
-      ? await db.query('workouts')
+      ? await db.query(
+          'workouts',
+          orderBy: 'dateTime DESC',
+        )
       : await db.query(
           'workouts',
           where: 'id = ?',
@@ -99,7 +102,10 @@ class DatabaseHelper {
             where: 'name = ?',
             whereArgs: [name],
           )
-        : await db.query('exercises');
+        : await db.query(
+            'exercises',
+            orderBy: 'name ASC',
+          );
     return exercisesMapList
       .map((Map<String, dynamic> exercise) => Exercise.fromMap(exercise))
       .toList();

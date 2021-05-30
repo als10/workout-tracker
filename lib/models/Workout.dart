@@ -4,16 +4,15 @@ import 'package:workout_tracker/models/Log.dart';
 class Workout {
   int id;
   String name;
-  DateTime? dateTime;
+  DateTime dateTime;
 
-  late List<Log> logs;
+  List<Log> logs = [];
 
   Workout({
-    id,
-    name,
-    this.dateTime,
-  })  : this.id = id ?? -1,
-        this.name = name ?? '';
+    this.id = -1,
+    this.name = '',
+    dateTime,
+  }) : this.dateTime = dateTime ?? DateTime.now();
 
   Workout.fromMap(Map<String, dynamic> res)
       : id = res["id"],
@@ -23,8 +22,7 @@ class Workout {
   Map<String, dynamic?> toMap() {
     return {
       'name': name.trim(),
-      if (dateTime != null)
-        'dateTime': DateFormat('yyyy-MM-dd hh:mm').format(dateTime!).toString()
+      'dateTime': DateFormat('yyyy-MM-dd hh:mm').format(dateTime).toString()
     };
   }
 }

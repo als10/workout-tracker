@@ -1,11 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:workout_tracker/models/Log.dart';
+import 'package:workout_tracker/models/Workout.dart';
 import 'package:workout_tracker/screens/AddWorkoutForm/components/DateTimePicker.dart';
 import 'package:workout_tracker/screens/AddWorkoutForm/components/LogInputs.dart';
 
+class ScreenArguments {
+  final Function upsertWorkout;
+  final Workout? workout;
+
+  ScreenArguments(this.upsertWorkout, this.workout);
+}
+
 class AddWorkoutForm extends StatefulWidget {
   static const routeName = '/AddWorkoutForm';
+
+  final Function upsert;
+  final Workout? workout;
+
+  AddWorkoutForm({required this.upsert, this.workout});
 
   @override
   AddWorkoutFormState createState() => AddWorkoutFormState();
@@ -16,23 +30,24 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
   late final TextEditingController setsController;
   late final TextEditingController repsController;
 
-  static const Map<String, dynamic> defaultLog = {
-    'exerciseName': '',
-    'sets': 0,
-    'reps': 0
-  };
-
-  static List<Map<String, dynamic>> logsList = [defaultLog];
+  static late List<Log> logsList;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  DateTime _selectedDateTime = DateTime.now();
+  late DateTime _selectedDateTime;
 
   @override
   void initState() {
     nameController = TextEditingController();
     setsController = TextEditingController();
     repsController = TextEditingController();
+
+    logsList = widget.workout != null && widget.workout!.logs.length > 0
+      ? widget.workout!.logs
+      : [Log()];
+
+    _selectedDateTime = widget.workout == null ? DateTime.now() : widget.workout!.dateTime;
+
     super.initState();
   }
 
@@ -46,44 +61,49 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
 
   void _save(context) {
     if (_formKey.currentState!.validate()) {
-      final Function addWorkout =
-          ModalRoute.of(context)!.settings.arguments as Function;
-      addWorkout(logs: logsList, dateTime: _selectedDateTime);
-      logsList = [defaultLog];
+      Workout newWorkout = widget.workout ?? Workout();
+      newWorkout.dateTime = _selectedDateTime;
+      newWorkout.logs = logsList;
+      widget.upsert(newWorkout);
+
+      logsList = [Log()];
       Navigator.of(context).pop();
     }
   }
 
   void changeLog(
       {required int index, String? exerciseName, int? sets, int? reps}) {
-    logsList[index] = {
-      ...logsList[index],
-      if (exerciseName != null) 'exerciseName': exerciseName,
-      if (sets != null) 'sets': sets,
-      if (reps != null) 'reps': reps
-    };
+    Log log = logsList[index];
+    logsList[index] = Log(
+      id: log.id,
+      workoutId: log.workoutId,
+      exerciseName: exerciseName ?? log.exercise.name,
+      sets: sets ?? log.sets,
+      reps: reps ?? log.reps
+    );
   }
 
   Future<void> _selectDateTime(BuildContext context) async {
-    DateTime? pickedDate = await DateTimePicker.selectDate(
-        context, _selectedDateTime);
+    DateTime? pickedDate =
+        await DateTimePicker.selectDate(context, _selectedDateTime);
     if (pickedDate != null && pickedDate != _selectedDateTime) {
       setState(() {
-        _selectedDateTime = DateTime(
-            pickedDate.year, pickedDate.month, pickedDate.day,
-            _selectedDateTime.hour, _selectedDateTime.minute
-        );
+        _selectedDateTime = DateTime(pickedDate.year, pickedDate.month,
+            pickedDate.day, _selectedDateTime.hour, _selectedDateTime.minute);
       });
     }
 
-    TimeOfDay? pickedTime =  await DateTimePicker.selectTime(
+    TimeOfDay? pickedTime = await DateTimePicker.selectTime(
         context, TimeOfDay.fromDateTime(_selectedDateTime));
-    if (pickedTime != null && pickedTime != TimeOfDay.fromDateTime(_selectedDateTime)) {
+    if (pickedTime != null &&
+        pickedTime != TimeOfDay.fromDateTime(_selectedDateTime)) {
       setState(() {
         _selectedDateTime = DateTime(
-            _selectedDateTime.year, _selectedDateTime.month, _selectedDateTime.day,
-            pickedTime.hour, pickedTime.minute
-        );
+            _selectedDateTime.year,
+            _selectedDateTime.month,
+            _selectedDateTime.day,
+            pickedTime.hour,
+            pickedTime.minute);
       });
     }
   }
@@ -126,7 +146,7 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
                 onPressed: () => _selectDateTime(context),
               ),
               Text(DateFormat('h:mm a - MMM d, yyyy').format(_selectedDateTime),
-                style: Theme.of(context).textTheme.headline6),
+                  style: Theme.of(context).textTheme.headline6),
             ],
           ),
           ..._getExercises(),
@@ -134,7 +154,7 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
             child: ElevatedButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  logsList = [...logsList, defaultLog];
+                  logsList = [...logsList, Log()];
                   setState(() {});
                 }
               },

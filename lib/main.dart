@@ -7,6 +7,6 @@ void main() {
     title: 'Workouts',
     home: WorkoutsList(),
     initialRoute: '/',
-    routes: routes,
+    onGenerateRoute: CustomRouter.generateRoute,
   ));
 }

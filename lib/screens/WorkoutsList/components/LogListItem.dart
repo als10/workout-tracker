@@ -5,9 +5,7 @@ import 'package:workout_tracker/models/Log.dart';
 class LogListItem extends StatelessWidget {
   final Log log;
 
-  const LogListItem({
-    required this.log
-  });
+  const LogListItem({required this.log});
 
   @override
   Widget build(BuildContext context) {
@@ -17,14 +15,14 @@ class LogListItem extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 4.0),
-              child: Text(log.exercise.name, style: Theme.of(context).textTheme.bodyText1),
+              child: Text(log.exercise.name,
+                  style: Theme.of(context).textTheme.bodyText1),
             ),
             Text(
               '${log.sets.toString()} sets of ${log.reps.toString()} reps',
               style: Theme.of(context).textTheme.bodyText2,
             ),
           ],
-        )
-    );
+        ));
   }
 }

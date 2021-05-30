@@ -7,12 +7,11 @@ class SetsAndRepsInput extends StatelessWidget {
   final Function onSetsChange;
   final Function onRepsChange;
 
-  SetsAndRepsInput({
-    required this.setsController,
-    required this.repsController,
-    required this.onSetsChange,
-    required this.onRepsChange
-  });
+  SetsAndRepsInput(
+      {required this.setsController,
+      required this.repsController,
+      required this.onSetsChange,
+      required this.onRepsChange});
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +63,6 @@ class SetsAndRepsInput extends StatelessWidget {
             ),
             Text('reps'),
           ],
-        )
-    );
+        ));
   }
 }

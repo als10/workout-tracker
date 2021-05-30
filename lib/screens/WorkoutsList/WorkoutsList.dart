@@ -31,36 +31,60 @@ class _WorkoutsListState extends State<WorkoutsList> {
     _getAllWorkouts();
   }
 
-  void _addWorkout(
-      {String? workoutName,
-      List<Map<String, dynamic>>? logs,
-      DateTime? dateTime}) async {
+  void _addWorkout(Workout workout) async {
     _showSnackBar(context: context, message: 'Adding workout...');
 
-    Workout newWorkout = await dbHelper
-        .insertWorkout(Workout(name: workoutName ?? '', dateTime: dateTime));
+    Workout newWorkout = await dbHelper.insertWorkout(workout);
 
     List<Log> newLogs = [];
-    for (Map<String, dynamic> log in (logs ?? [])) {
-      if (log['exerciseName'] != '') {
-        Exercise exercise =
-            await dbHelper.insertExercise(Exercise(name: log['exerciseName']));
-        Log newLog = await dbHelper.insertLog(Log(
-            workoutId: newWorkout.id,
-            exerciseId: exercise.id,
-            sets: log['sets'],
-            reps: log['reps']));
-        newLog.exercise = exercise;
-        newLogs.add(newLog);
-      }
+    for (Log log in workout.logs) {
+      Exercise exercise =
+          await dbHelper.insertExercise(Exercise(name: log.exercise.name));
+      Log newLog = await dbHelper.upsertLog(Log(
+          workoutId: newWorkout.id,
+          exerciseId: exercise.id,
+          sets: log.sets,
+          reps: log.reps));
+      newLog.exercise = exercise;
+      newLogs.add(newLog);
     }
 
     newWorkout.logs = newLogs;
 
     setState(() {
-      workouts.insert(0, newWorkout);
+      workouts.add(newWorkout);
+      workouts.sort((a,b) => b.dateTime.compareTo(a.dateTime));
     });
     _showSnackBar(context: context, message: 'Workout added');
+  }
+
+  void _updateWorkout(Workout workout) async {
+    _showSnackBar(context: context, message: 'Updating workout...');
+    Workout updatedWorkout = await dbHelper.updateWorkout(workout);
+
+    List<Log> logs = [];
+    for (Log log in workout.logs) {
+      Exercise exercise =
+          await dbHelper.insertExercise(Exercise(name: log.exercise.name));
+      Log updatedLog = await dbHelper.upsertLog(Log(
+          id: log.id,
+          workoutId: updatedWorkout.id,
+          exerciseId: exercise.id,
+          sets: log.sets,
+          reps: log.reps));
+      updatedLog.exercise = exercise;
+      logs.add(updatedLog);
+    }
+
+    updatedWorkout.logs = logs;
+
+    setState(() {
+      Workout oldWorkout = workouts
+          .where((w) => w.id == updatedWorkout.id).toList()[0];
+      workouts[workouts.indexOf(oldWorkout)] = updatedWorkout;
+      workouts.sort((a,b) => b.dateTime.compareTo(a.dateTime));
+    });
+    _showSnackBar(context: context, message: 'Workout updated');
   }
 
   void _deleteWorkout(Workout workout) {
@@ -94,7 +118,7 @@ class _WorkoutsListState extends State<WorkoutsList> {
     Navigator.pushNamed(
       context,
       AddWorkoutForm.routeName,
-      arguments: _addWorkout,
+      arguments: ScreenArguments(_addWorkout, null),
     );
   }
 
@@ -157,7 +181,8 @@ class _WorkoutsListState extends State<WorkoutsList> {
                 ),
               ),
             ),
-            child: WorkoutListItem(workout: workout),
+            child: WorkoutListItem(
+                workout: workout, updateWorkout: _updateWorkout),
           );
         },
       ),

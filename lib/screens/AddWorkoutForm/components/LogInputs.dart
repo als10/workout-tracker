@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:workout_tracker/models/Log.dart';
 import 'package:workout_tracker/screens/AddWorkoutForm/AddWorkoutForm.dart';
 import 'package:workout_tracker/screens/AddWorkoutForm/components/ExerciseNameInput.dart';
 import 'package:workout_tracker/screens/AddWorkoutForm/components/SetsAndRepsInput.dart';
@@ -36,12 +37,12 @@ class _LogInputsState extends State<LogInputs> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> log = AddWorkoutFormState.logsList[widget.index];
+    Log log = AddWorkoutFormState.logsList[widget.index];
 
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      nameController.text = log['exerciseName'];
-      setsController.text = log['sets'].toString();
-      repsController.text = log['reps'].toString();
+      nameController.text = log.exercise.name;
+      setsController.text = log.sets.toString();
+      repsController.text = log.reps.toString();
     });
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

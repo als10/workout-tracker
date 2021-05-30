@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:workout_tracker/screens/AddWorkoutForm/components/DateTimePicker.dart';
 import 'package:workout_tracker/screens/AddWorkoutForm/components/LogInputs.dart';
 
 class AddWorkoutForm extends StatefulWidget {
@@ -24,6 +26,8 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  DateTime _selectedDateTime = DateTime.now();
+
   @override
   void initState() {
     nameController = TextEditingController();
@@ -44,7 +48,7 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
     if (_formKey.currentState!.validate()) {
       final Function addWorkout =
           ModalRoute.of(context)!.settings.arguments as Function;
-      addWorkout(logs: logsList);
+      addWorkout(logs: logsList, dateTime: _selectedDateTime);
       logsList = [defaultLog];
       Navigator.of(context).pop();
     }
@@ -60,12 +64,36 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
     };
   }
 
+  Future<void> _selectDateTime(BuildContext context) async {
+    DateTime? pickedDate = await DateTimePicker.selectDate(
+        context, _selectedDateTime);
+    if (pickedDate != null && pickedDate != _selectedDateTime) {
+      setState(() {
+        _selectedDateTime = DateTime(
+            pickedDate.year, pickedDate.month, pickedDate.day,
+            _selectedDateTime.hour, _selectedDateTime.minute
+        );
+      });
+    }
+
+    TimeOfDay? pickedTime =  await DateTimePicker.selectTime(
+        context, TimeOfDay.fromDateTime(_selectedDateTime));
+    if (pickedTime != null && pickedTime != TimeOfDay.fromDateTime(_selectedDateTime)) {
+      setState(() {
+        _selectedDateTime = DateTime(
+            _selectedDateTime.year, _selectedDateTime.month, _selectedDateTime.day,
+            pickedTime.hour, pickedTime.minute
+        );
+      });
+    }
+  }
+
   List<Widget> _getExercises() {
     List<Widget> logsInputFieldsList = [];
     for (int i = 0; i < logsList.length; i++) {
       logsInputFieldsList.add(
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Column(
             children: [
               LogInputs(i, changeLog),
@@ -91,6 +119,16 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.calendar_today_rounded),
+                onPressed: () => _selectDateTime(context),
+              ),
+              Text(DateFormat('h:mm a - MMM d, yyyy').format(_selectedDateTime),
+                style: Theme.of(context).textTheme.headline6),
+            ],
+          ),
           ..._getExercises(),
           Center(
             child: ElevatedButton(

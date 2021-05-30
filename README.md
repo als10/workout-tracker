@@ -4,6 +4,7 @@
 A mobile app to track all your workouts!
 
 ## Demo
+<img src="demo.gif" width="420"/>
 
 ## Installation
 In order to run this application on your local device, you have to follow the instructions to [download and set up Flutter.](https://flutter.dev/docs/get-started/install)

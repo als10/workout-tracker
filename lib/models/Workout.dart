@@ -1,28 +1,25 @@
 import 'package:intl/intl.dart';
-import 'package:workout_tracker/models/Log.dart';
+import 'package:workout_tracker/models/ExerciseSet.dart';
 
 class Workout {
-  int id;
-  String name;
+  int? id;
   DateTime dateTime;
+  List<ExerciseSet> sets;
 
-  List<Log> logs = [];
+  Workout({this.id,
+    DateTime? dateTime,
+    List<ExerciseSet>? sets})
+      : this.dateTime = dateTime ?? DateTime.now(),
+        this.sets = sets ?? [];
 
-  Workout({
-    this.id = -1,
-    this.name = '',
-    dateTime,
-  }) : this.dateTime = dateTime ?? DateTime.now();
+  Workout.fromMap(Map<String, dynamic> map, {List<ExerciseSet>? sets})
+      : this(id: map["id"],
+      dateTime: DateTime.parse(map["dateTime"].trim()),
+      sets: sets);
 
-  Workout.fromMap(Map<String, dynamic> res)
-      : id = res["id"],
-        name = res["name"].trim(),
-        dateTime = DateTime.parse(res["dateTime"].trim());
-
-  Map<String, dynamic?> toMap() {
+  Map<String, dynamic> toMap() {
     return {
-      'name': name.trim(),
-      'dateTime': DateFormat('yyyy-MM-dd hh:mm').format(dateTime).toString()
+      'dateTime': DateFormat('yyyy-MM-dd hh:mm').format(this.dateTime).toString()
     };
   }
 }

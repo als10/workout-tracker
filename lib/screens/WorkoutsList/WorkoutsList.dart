@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:workout_tracker/models/Exercise.dart';
-import 'package:workout_tracker/models/Log.dart';
 import 'package:workout_tracker/models/Workout.dart';
 import 'package:workout_tracker/screens/AddWorkoutForm/AddWorkoutForm.dart';
 import 'package:workout_tracker/services/DatabaseHelper.dart';
@@ -31,60 +29,14 @@ class _WorkoutsListState extends State<WorkoutsList> {
     _getAllWorkouts();
   }
 
-  void _addWorkout(Workout workout) async {
+  void _upsertWorkout(Workout workout) async {
     _showSnackBar(context: context, message: 'Adding workout...');
-
-    Workout newWorkout = await dbHelper.insertWorkout(workout);
-
-    List<Log> newLogs = [];
-    for (Log log in workout.logs) {
-      Exercise exercise =
-          await dbHelper.insertExercise(Exercise(name: log.exercise.name));
-      Log newLog = await dbHelper.upsertLog(Log(
-          workoutId: newWorkout.id,
-          exerciseId: exercise.id,
-          sets: log.sets,
-          reps: log.reps));
-      newLog.exercise = exercise;
-      newLogs.add(newLog);
-    }
-
-    newWorkout.logs = newLogs;
-
+    Workout newWorkout = await dbHelper.upsertWorkout(workout);
     setState(() {
       workouts.add(newWorkout);
-      workouts.sort((a,b) => b.dateTime.compareTo(a.dateTime));
+      workouts.sort((a, b) => b.dateTime.compareTo(a.dateTime));
     });
     _showSnackBar(context: context, message: 'Workout added');
-  }
-
-  void _updateWorkout(Workout workout) async {
-    _showSnackBar(context: context, message: 'Updating workout...');
-    Workout updatedWorkout = await dbHelper.updateWorkout(workout);
-
-    List<Log> logs = [];
-    for (Log log in workout.logs) {
-      Exercise exercise =
-          await dbHelper.insertExercise(Exercise(name: log.exercise.name));
-      Log updatedLog = await dbHelper.upsertLog(Log(
-          id: log.id,
-          workoutId: updatedWorkout.id,
-          exerciseId: exercise.id,
-          sets: log.sets,
-          reps: log.reps));
-      updatedLog.exercise = exercise;
-      logs.add(updatedLog);
-    }
-
-    updatedWorkout.logs = logs;
-
-    setState(() {
-      Workout oldWorkout = workouts
-          .where((w) => w.id == updatedWorkout.id).toList()[0];
-      workouts[workouts.indexOf(oldWorkout)] = updatedWorkout;
-      workouts.sort((a,b) => b.dateTime.compareTo(a.dateTime));
-    });
-    _showSnackBar(context: context, message: 'Workout updated');
   }
 
   void _deleteWorkout(Workout workout) {
@@ -115,10 +67,9 @@ class _WorkoutsListState extends State<WorkoutsList> {
   }
 
   void _navigateToAddWorkout(BuildContext context) {
-    Navigator.pushNamed(
-      context,
+    Navigator.of(context).pushNamed(
       AddWorkoutForm.routeName,
-      arguments: ScreenArguments(_addWorkout, null),
+      arguments: ScreenArguments(_upsertWorkout, null),
     );
   }
 
@@ -182,7 +133,7 @@ class _WorkoutsListState extends State<WorkoutsList> {
               ),
             ),
             child: WorkoutListItem(
-                workout: workout, updateWorkout: _updateWorkout),
+                workout: workout, updateWorkout: _upsertWorkout),
           );
         },
       ),

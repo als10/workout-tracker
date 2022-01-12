@@ -16,9 +16,13 @@ class WorkoutListItem extends StatelessWidget {
   });
 
   void _navigateToUpdateWorkout(BuildContext context) {
-    Navigator.of(context).pushNamed(
-      AddWorkoutForm.routeName,
-      arguments: ScreenArguments(updateWorkout, workout),
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) =>
+        AddWorkoutForm(
+          upsert: updateWorkout,
+          workout: workout,
+        ),
+      )
     );
   }
 

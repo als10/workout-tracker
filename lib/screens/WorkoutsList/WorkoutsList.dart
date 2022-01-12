@@ -67,9 +67,12 @@ class _WorkoutsListState extends State<WorkoutsList> {
   }
 
   void _navigateToAddWorkout(BuildContext context) {
-    Navigator.of(context).pushNamed(
-      AddWorkoutForm.routeName,
-      arguments: ScreenArguments(_upsertWorkout, null),
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) =>
+        AddWorkoutForm(
+          upsert: _upsertWorkout,
+        ),
+      )
     );
   }
 

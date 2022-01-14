@@ -186,7 +186,7 @@ class DatabaseHelper {
 
     exercise.progressions = await Future.wait(exercise.progressions
         .map((Progression progression) async =>
-            await upsertProgression(progression))
+            await upsertProgression(progression, exerciseId: exercise.id))
         .toList());
 
     return exercise;
@@ -197,7 +197,9 @@ class DatabaseHelper {
     return true;
   }
 
-  Future<Progression> upsertProgression(Progression progression) async {
+  Future<Progression> upsertProgression(Progression progression,
+      {int? exerciseId}) async {
+    if (exerciseId != null) progression.exerciseId = exerciseId;
     if (progression.id == null) {
       progression.id = await db.insert('progressions', progression.toMap());
     } else {

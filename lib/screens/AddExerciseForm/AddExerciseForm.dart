@@ -36,7 +36,9 @@ class AddExerciseFormState extends State<AddExerciseForm> {
       ProgressionInput(
         initialValue: p.name,
         onChange: (v) => p.name = v,
-        deleteProgression: () => setState(() => exercise.progressions.remove(p)),
+        deleteProgression: exercise.progressions.length > 1
+          ? () => setState(() => exercise.progressions.remove(p))
+          : null,
       )).toList();
 
   Widget _exerciseInput() {
@@ -52,7 +54,7 @@ class AddExerciseFormState extends State<AddExerciseForm> {
           child: ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                setState(() => exercise.progressions.add(Progression.empty()));
+                setState(() => exercise.progressions.add(Progression.empty(rank: exercise.progressions.length, exerciseId: exercise.id ?? -1)));
               }
             },
             child: Text('Add another progression'),

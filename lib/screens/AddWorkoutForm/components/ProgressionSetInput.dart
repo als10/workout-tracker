@@ -17,6 +17,8 @@ class ProgressionSetInput extends StatelessWidget {
     _nameController = TextEditingController(text: set.name);
     _repsController = TextEditingController(text: set.reps.toString());
 
+    if (set.id == null) set.setProgression(progressions[0]);
+
     return Padding(
         padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
         child: Row(
@@ -44,7 +46,7 @@ class ProgressionSetInput extends StatelessWidget {
             ),
             Text('reps of'),
             DropdownButton<String>(
-              value: set.name,
+              value: set.id.toString(),
               icon: const Icon(Icons.arrow_downward),
               elevation: 16,
               style: const TextStyle(color: Colors.deepPurple),
@@ -62,24 +64,6 @@ class ProgressionSetInput extends StatelessWidget {
                   child: Text(p.name),
                 );
               }).toList(),
-            ),
-            Container(
-              width: 100.0,
-              child: TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(0.0),
-                  ),
-                ),
-                onChanged: (v) => set.name = v,
-                validator: (String? v) {
-                  if (v == null || v.isEmpty || int.parse(v) == 0) {
-                    return '';
-                  }
-                  return null;
-                },
-              ),
             ),
           ],
         ));

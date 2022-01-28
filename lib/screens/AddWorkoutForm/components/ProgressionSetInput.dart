@@ -9,12 +9,10 @@ class ProgressionSetInput extends StatelessWidget {
 
   ProgressionSetInput({required this.set, required this.progressions});
 
-  late TextEditingController _nameController;
   late TextEditingController _repsController;
 
   @override
   Widget build(BuildContext context) {
-    _nameController = TextEditingController(text: set.name);
     _repsController = TextEditingController(text: set.reps.toString());
 
     if (set.id == null) set.setProgression(progressions[0]);

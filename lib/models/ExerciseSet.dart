@@ -9,9 +9,17 @@ class ExerciseSet extends Exercise {
             name: exercise.name,
             progressions: exercise.progressions);
 
+  ExerciseSet.empty() : this(exercise: Exercise.empty(), sets: []);
+
   ExerciseSet.fromMap(Map<String, dynamic> map, {List<ProgressionSet>? sets})
       : this.sets = sets ?? [],
         super.fromMap(map);
+
+  void setExercise(Exercise exercise) {
+    this.id = exercise.id;
+    this.name = exercise.name;
+    this.progressions = exercise.progressions;
+  }
 }
 
 class ProgressionSet extends Progression {
@@ -23,6 +31,8 @@ class ProgressionSet extends Progression {
             exerciseId: progression.exerciseId,
             name: progression.name,
             rank: progression.rank);
+
+  ProgressionSet.empty() : this(progression: Progression.empty(), reps: 0);
 
   ProgressionSet.fromMap(Map<String, dynamic> map, {int reps = 0})
       : this.reps = reps,

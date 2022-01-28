@@ -1,34 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:workout_tracker/models/Exercise.dart';
+import 'package:workout_tracker/screens/ExercisesList/ExercisesList.dart';
 
-class ExerciseNameInput extends StatelessWidget {
-  final TextEditingController controller;
-  final Function onChange;
+class ExerciseInput extends StatelessWidget {
+  Exercise exercise;
+  final Function setExercise;
+  ExerciseInput({Exercise? exercise, required this.setExercise}) : this.exercise = exercise ?? Exercise.empty();
 
-  ExerciseNameInput({required this.controller, required this.onChange});
+  Future<void> _navigateToChooseExercise(BuildContext context) async {
+    exercise = await Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => ExercisesList())
+    );
+    setExercise(exercise);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-      child: TextFormField(
-        controller: controller,
-        style: Theme.of(context).textTheme.bodyText2,
-        decoration: InputDecoration(
-          labelStyle: Theme.of(context).textTheme.bodyText2,
-          labelText: 'Exercise Name',
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(0.0),
-          ),
-        ),
-        onChanged: (v) => onChange(v),
-        validator: (String? v) {
-          if (v == null || v.isEmpty) {
-            return 'Please enter the exercise name';
-          }
-          return null;
-        },
-      ),
+    return ElevatedButton(
+      onPressed: () => _navigateToChooseExercise(context),
+      child: Text(exercise.name)
     );
   }
 }

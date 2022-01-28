@@ -14,7 +14,7 @@ class ProgressionInput extends StatelessWidget {
     _controller.text = initialValue;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
+      child: Column(
         children: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),

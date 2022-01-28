@@ -43,9 +43,7 @@ class ProgressionSetInput extends StatelessWidget {
             Container(
               width: 100.0,
               child: TextFormField(
-                keyboardType: TextInputType.number,
                 controller: _nameController,
-                maxLength: 2,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(0.0),

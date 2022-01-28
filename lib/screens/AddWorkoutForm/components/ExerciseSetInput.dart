@@ -19,7 +19,13 @@ class ExerciseSetInput extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
         children: [
-          ExerciseInput(exercise: Exercise(id: set.id, name: set.name), setExercise: (Exercise exercise) => set.setExercise(exercise)),
+          ExerciseInput(
+            exercise: Exercise(id: set.id, name: set.name),
+            setExercise: (Exercise exercise) {
+              set.setExercise(exercise);
+              set.sets = [ProgressionSet.empty()];
+            },
+          ),
           ..._progressionInputs,
           if (delete != null)
             ElevatedButton(

@@ -46,4 +46,11 @@ class ProgressionSet extends Progression {
       if(workoutId != null) 'workoutId': workoutId,
     };
   }
+
+  void setProgression(Progression progression) {
+    this.id = progression.id;
+    this.name = progression.name;
+    this.exerciseId = progression.exerciseId;
+    this.rank = progression.rank;
+  }
 }

@@ -12,7 +12,7 @@ class ExerciseSetInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> _progressionInputs = set.sets.map((ProgressionSet pset) =>
-        ProgressionSetInput(set: pset)
+        ProgressionSetInput(set: pset, progressions: set.progressions)
     ).toList();
 
     return Padding(

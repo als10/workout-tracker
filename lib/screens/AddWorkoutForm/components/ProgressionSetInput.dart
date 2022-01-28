@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:workout_tracker/models/Exercise.dart';
 import 'package:workout_tracker/models/ExerciseSet.dart';
 
 class ProgressionSetInput extends StatelessWidget {
   ProgressionSet set;
-  ProgressionSetInput({required this.set});
+  List<Progression> progressions;
+
+  ProgressionSetInput({required this.set, required this.progressions});
 
   late TextEditingController _nameController;
   late TextEditingController _repsController;
@@ -40,6 +43,26 @@ class ProgressionSetInput extends StatelessWidget {
               ),
             ),
             Text('reps of'),
+            DropdownButton<String>(
+              value: set.name,
+              icon: const Icon(Icons.arrow_downward),
+              elevation: 16,
+              style: const TextStyle(color: Colors.deepPurple),
+              underline: Container(
+                height: 2,
+                color: Colors.deepPurpleAccent,
+              ),
+              onChanged: (String? v) {
+                if (v != null)
+                  set.setProgression(progressions.firstWhere((Progression p) => p.id == int.parse(v)));
+              },
+              items: progressions.map((Progression p) {
+                return DropdownMenuItem(
+                  value: p.id.toString(),
+                  child: Text(p.name),
+                );
+              }).toList(),
+            ),
             Container(
               width: 100.0,
               child: TextFormField(

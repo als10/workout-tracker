@@ -61,7 +61,7 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
     }
   }
 
-  Future<Exercise> _navigateToChooseExercise(BuildContext context) async {
+  Future<Exercise?> _navigateToChooseExercise(BuildContext context) async {
     return await Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => ExercisesList())
     );
@@ -97,10 +97,16 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
           ..._getExercises(),
           Center(
             child: ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  workout.sets.add(ExerciseSet.empty());
-                  setState(() {});
+              onPressed: () async {
+                Exercise? selectedExercise = await _navigateToChooseExercise(context);
+                if (selectedExercise != null) {
+                  setState(() =>
+                      workout.sets.add(
+                          ExerciseSet(
+                              exercise: selectedExercise,
+                              sets: [ProgressionSet.empty()]
+                          )
+                      ));
                 }
               },
               child: Text('Add another exercise'),

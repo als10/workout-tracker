@@ -29,11 +29,13 @@ class _ExerciseSetInputState extends State<ExerciseSetInput> {
         children: [
           ElevatedButton(
             onPressed: () async {
-              Exercise selectedExercise = await widget.navigateToChooseExercise(context);
-              setState(() {
-                set.setExercise(selectedExercise);
-                set.sets = [ProgressionSet.empty()];
-              });
+              Exercise? selectedExercise = await widget.navigateToChooseExercise(context);
+              if (selectedExercise != null) {
+                setState(() {
+                  set.setExercise(selectedExercise);
+                  set.sets = [ProgressionSet.empty()];
+                });
+              }
             },
             child: Text(set.name),
           ),

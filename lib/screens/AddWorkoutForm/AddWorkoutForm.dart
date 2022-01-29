@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:workout_tracker/models/Exercise.dart';
 import 'package:workout_tracker/models/ExerciseSet.dart';
 import 'package:workout_tracker/models/Workout.dart';
 import 'package:workout_tracker/screens/AddWorkoutForm/components/DateTimePicker.dart';
 import 'package:workout_tracker/screens/AddWorkoutForm/components/ExerciseSetInput.dart';
+import 'package:workout_tracker/screens/ExercisesList/ExercisesList.dart';
 
 class AddWorkoutForm extends StatefulWidget {
   final Function upsert;
@@ -59,6 +61,12 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
     }
   }
 
+  Future<Exercise> _navigateToChooseExercise(BuildContext context) async {
+    return await Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => ExercisesList())
+    );
+  }
+
   List<Widget> _getExercises() =>
     workout.sets.map((ExerciseSet set) =>
         ExerciseSetInput(
@@ -66,6 +74,7 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
           delete: workout.sets.length > 1
             ? () => setState(() => workout.sets.remove(set))
             : null,
+          navigateToChooseExercise: _navigateToChooseExercise,
         )
     ).toList();
 

@@ -62,21 +62,19 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
   }
 
   Future<Exercise?> _navigateToChooseExercise(BuildContext context) async {
-    return await Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => ExercisesList())
-    );
+    return await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => ExercisesList()));
   }
 
-  List<Widget> _getExercises() =>
-    workout.sets.map((ExerciseSet set) =>
-        ExerciseSetInput(
-          set: set,
-          delete: workout.sets.length > 1
-            ? () => setState(() => workout.sets.remove(set))
-            : null,
-          navigateToChooseExercise: _navigateToChooseExercise,
-        )
-    ).toList();
+  List<Widget> _getExercises() => workout.sets
+      .map((ExerciseSet set) => ExerciseSetInput(
+            set: set,
+            delete: workout.sets.length > 1
+                ? () => setState(() => workout.sets.remove(set))
+                : null,
+            navigateToChooseExercise: _navigateToChooseExercise,
+          ))
+      .toList();
 
   Widget _exerciseInput() {
     return Padding(
@@ -98,15 +96,12 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
           Center(
             child: ElevatedButton(
               onPressed: () async {
-                Exercise? selectedExercise = await _navigateToChooseExercise(context);
+                Exercise? selectedExercise =
+                    await _navigateToChooseExercise(context);
                 if (selectedExercise != null) {
-                  setState(() =>
-                      workout.sets.add(
-                          ExerciseSet(
-                              exercise: selectedExercise,
-                              sets: [ProgressionSet.empty()]
-                          )
-                      ));
+                  setState(() => workout.sets.add(ExerciseSet(
+                      exercise: selectedExercise,
+                      sets: [ProgressionSet.empty()])));
                 }
               },
               child: Text('Add another exercise'),

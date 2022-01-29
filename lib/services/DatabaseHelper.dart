@@ -214,5 +214,4 @@ class DatabaseHelper {
         .delete('progressions', where: 'id = ?', whereArgs: [progression.id]);
     return true;
   }
-
 }

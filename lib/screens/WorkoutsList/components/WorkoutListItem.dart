@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:workout_tracker/models/ExerciseSet.dart';
 import 'package:workout_tracker/models/Workout.dart';
 import 'package:workout_tracker/screens/AddWorkoutForm/AddWorkoutForm.dart';
+
 import 'SetListItem.dart';
-import 'package:intl/intl.dart';
 
 class WorkoutListItem extends StatelessWidget {
   final Workout workout;
@@ -16,14 +17,12 @@ class WorkoutListItem extends StatelessWidget {
   });
 
   void _navigateToUpdateWorkout(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) =>
-        AddWorkoutForm(
-          upsert: updateWorkout,
-          workout: workout,
-        ),
-      )
-    );
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => AddWorkoutForm(
+        upsert: updateWorkout,
+        workout: workout,
+      ),
+    ));
   }
 
   @override
@@ -32,11 +31,12 @@ class WorkoutListItem extends StatelessWidget {
       children: [
         ListTile(
           title:
-            Text(DateFormat('h:mm a - MMM d, yyyy').format(workout.dateTime)),
+              Text(DateFormat('h:mm a - MMM d, yyyy').format(workout.dateTime)),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children:
-                workout.sets.map((ExerciseSet set) => SetListItem(set: set)).toList(),
+            children: workout.sets
+                .map((ExerciseSet set) => SetListItem(set: set))
+                .toList(),
           ),
           onTap: () => _navigateToUpdateWorkout(context),
         ),

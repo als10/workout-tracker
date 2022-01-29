@@ -54,7 +54,8 @@ class ProgressionSetInput extends StatelessWidget {
               ),
               onChanged: (String? v) {
                 if (v != null)
-                  set.setProgression(progressions.firstWhere((Progression p) => p.id == int.parse(v)));
+                  set.setProgression(progressions
+                      .firstWhere((Progression p) => p.id == int.parse(v)));
               },
               items: progressions.map((Progression p) {
                 return DropdownMenuItem(

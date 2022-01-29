@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class ExerciseNameInput extends StatelessWidget {
   final String initialValue;
   final Function onChange;
+
   ExerciseNameInput({this.initialValue = '', required this.onChange});
 
   TextEditingController _controller = TextEditingController();

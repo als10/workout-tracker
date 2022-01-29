@@ -15,8 +15,8 @@ class SetListItem extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 4.0),
-              child: Text(set.name,
-                  style: Theme.of(context).textTheme.bodyText1),
+              child:
+                  Text(set.name, style: Theme.of(context).textTheme.bodyText1),
             ),
             Column(
               children: set.sets.map((ProgressionSet pset) {

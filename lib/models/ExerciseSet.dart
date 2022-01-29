@@ -43,7 +43,7 @@ class ProgressionSet extends Progression {
       'reps': this.reps,
       'progressionId': this.id,
       'exerciseId': this.exerciseId,
-      if(workoutId != null) 'workoutId': workoutId,
+      if (workoutId != null) 'workoutId': workoutId,
     };
   }
 

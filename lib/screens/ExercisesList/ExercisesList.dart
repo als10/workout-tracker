@@ -41,20 +41,18 @@ class _ExercisesListState extends State<ExercisesList> {
   }
 
   void _navigateToAddExercise(BuildContext context) {
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) =>
-            AddExerciseForm(
-              upsert: _upsertExercise,
-            ),
-        )
-    );
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => AddExerciseForm(
+        upsert: _upsertExercise,
+      ),
+    ));
   }
 
   void _showSnackBar(
       {required BuildContext context,
-        required String message,
-        SnackBarAction? action,
-        Function? handleOnDismissed}) {
+      required String message,
+      SnackBarAction? action,
+      Function? handleOnDismissed}) {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(message), action: action))
@@ -73,7 +71,8 @@ class _ExercisesListState extends State<ExercisesList> {
       body: ListView.builder(
         padding: EdgeInsets.symmetric(vertical: 8.0),
         itemCount: exercises.length,
-        itemBuilder: (context, index) => ExerciseListItem(exercise: exercises[index], updateExercise: _upsertExercise),
+        itemBuilder: (context, index) => ExerciseListItem(
+            exercise: exercises[index], updateExercise: _upsertExercise),
       ),
       floatingActionButton: Padding(
           padding: EdgeInsets.all(16.0),

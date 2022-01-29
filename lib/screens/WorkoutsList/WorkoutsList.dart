@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:workout_tracker/models/Workout.dart';
 import 'package:workout_tracker/screens/AddWorkoutForm/AddWorkoutForm.dart';
 import 'package:workout_tracker/services/DatabaseHelper.dart';
+
 import 'components/WorkoutListItem.dart';
 
 class WorkoutsList extends StatefulWidget {
@@ -67,13 +68,11 @@ class _WorkoutsListState extends State<WorkoutsList> {
   }
 
   void _navigateToAddWorkout(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) =>
-        AddWorkoutForm(
-          upsert: _upsertWorkout,
-        ),
-      )
-    );
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => AddWorkoutForm(
+        upsert: _upsertWorkout,
+      ),
+    ));
   }
 
   void _showSnackBar(

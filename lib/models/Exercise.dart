@@ -6,7 +6,9 @@ class Exercise {
   Exercise({this.id, required this.name, List<Progression>? progressions})
       : this.progressions = progressions ?? [];
 
-  Exercise.empty({String? name, List<Progression>? progressions}) : this.name = name ?? '', this.progressions = progressions ?? [Progression.empty()];
+  Exercise.empty({String? name, List<Progression>? progressions})
+      : this.name = name ?? '',
+        this.progressions = progressions ?? [Progression.empty()];
 
   Exercise.fromMap(Map<String, dynamic> map, {List<Progression>? progressions})
       : this(
@@ -33,7 +35,10 @@ class Progression {
       required this.rank,
       required this.name});
 
-  Progression.empty({int? exerciseId, int? rank, String? name}) : this.exerciseId = exerciseId ?? -1, this.rank = rank ?? -1, this.name = name ?? '';
+  Progression.empty({int? exerciseId, int? rank, String? name})
+      : this.exerciseId = exerciseId ?? -1,
+        this.rank = rank ?? -1,
+        this.name = name ?? '';
 
   Progression.fromMap(Map<String, dynamic> map)
       : this(

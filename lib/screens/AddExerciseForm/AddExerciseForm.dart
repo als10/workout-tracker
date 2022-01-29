@@ -31,30 +31,30 @@ class AddExerciseFormState extends State<AddExerciseForm> {
     }
   }
 
-  List<Widget> _progressionInputs() =>
-    exercise.progressions.map((Progression p) =>
-      ProgressionInput(
-        initialValue: p.name,
-        onChange: (v) => p.name = v,
-        deleteProgression: exercise.progressions.length > 1
-          ? () => setState(() => exercise.progressions.remove(p))
-          : null,
-      )).toList();
+  List<Widget> _progressionInputs() => exercise.progressions
+      .map((Progression p) => ProgressionInput(
+            initialValue: p.name,
+            onChange: (v) => p.name = v,
+            deleteProgression: exercise.progressions.length > 1
+                ? () => setState(() => exercise.progressions.remove(p))
+                : null,
+          ))
+      .toList();
 
   Widget _exerciseInput() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ExerciseNameInput(
-          initialValue: exercise.name,
-          onChange: (v) => exercise.name = v
-        ),
+            initialValue: exercise.name, onChange: (v) => exercise.name = v),
         ..._progressionInputs(),
         Center(
           child: ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                setState(() => exercise.progressions.add(Progression.empty(rank: exercise.progressions.length, exerciseId: exercise.id ?? -1)));
+                setState(() => exercise.progressions.add(Progression.empty(
+                    rank: exercise.progressions.length,
+                    exerciseId: exercise.id ?? -1)));
               }
             },
             child: Text('Add another progression'),

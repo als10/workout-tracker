@@ -5,7 +5,8 @@ class ProgressionInput extends StatelessWidget {
   final Function onChange;
   final Function? deleteProgression;
 
-  ProgressionInput({this.initialValue = '', required this.onChange, this.deleteProgression});
+  ProgressionInput(
+      {this.initialValue = '', required this.onChange, this.deleteProgression});
 
   TextEditingController _controller = TextEditingController();
 

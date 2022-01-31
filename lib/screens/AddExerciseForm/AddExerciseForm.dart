@@ -31,23 +31,13 @@ class AddExerciseFormState extends State<AddExerciseForm> {
     }
   }
 
-  List<Widget> _progressionInputs() => exercise.progressions
-      .map((Progression p) => ProgressionInput(
-            initialValue: p.name,
-            onChange: (v) => p.name = v,
-            deleteProgression: exercise.progressions.length > 1
-                ? () => setState(() => exercise.progressions.remove(p))
-                : null,
-          ))
-      .toList();
-
   Widget _exerciseInput() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ExerciseNameInput(
             initialValue: exercise.name, onChange: (v) => exercise.name = v),
-        ..._progressionInputs(),
+        ProgressionInputs(progressions: exercise.progressions),
       ],
     );
   }

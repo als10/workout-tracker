@@ -22,7 +22,24 @@ class _ExerciseSetInputState extends State<ExerciseSetInput> {
 
     List<Widget> _progressionInputs = set.sets
         .map((ProgressionSet pset) =>
-            ProgressionSetInput(set: pset, progressions: set.progressions))
+            Column(
+              children: [
+                ProgressionSetInput(set: pset, progressions: set.progressions),
+                Row(
+                  children: [
+                    if (set.sets.length > 1)
+                      IconButton(
+                        onPressed: () => setState(() => set.sets.remove(pset)),
+                        icon: Icon(Icons.delete),
+                      ),
+                    IconButton(
+                      onPressed: () => setState(() => set.sets.add(ProgressionSet.empty())),
+                      icon: Icon(Icons.add),
+                    ),
+                  ],
+                ),
+              ],
+            ))
         .toList();
 
     return Padding(

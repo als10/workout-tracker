@@ -51,25 +51,30 @@ class _ExerciseSetInputState extends State<ExerciseSetInput> {
       child: Wrap(
         runSpacing: 16.0,
         children: [
-          ElevatedButton(
-            onPressed: () async {
-              Exercise? selectedExercise =
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  Exercise? selectedExercise =
                   await widget.navigateToChooseExercise(context);
-              if (selectedExercise != null) {
-                setState(() {
-                  set.setExercise(selectedExercise);
-                  set.sets = [ProgressionSet.empty()];
-                });
-              }
-            },
-            child: Text(set.name),
+                  if (selectedExercise != null) {
+                    setState(() {
+                      set.setExercise(selectedExercise);
+                      set.sets = [ProgressionSet.empty()];
+                    });
+                  }
+                },
+                child: Text(set.name),
+              ),
+              if (widget.delete != null)
+                IconButton(
+                  onPressed: () => widget.delete!(),
+                  icon: Icon(Icons.delete),
+                ),
+            ],
           ),
           ..._progressionInputs,
-          if (widget.delete != null)
-            ElevatedButton(
-              onPressed: () => widget.delete!(),
-              child: Text('Delete Exercise'),
-            ),
         ],
       ),
     );

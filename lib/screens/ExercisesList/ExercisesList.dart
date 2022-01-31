@@ -35,6 +35,7 @@ class _ExercisesListState extends State<ExercisesList> {
     _showSnackBar(context: context, message: 'Adding exercise...');
     Exercise newExercise = await dbHelper.upsertExercise(exercise);
     setState(() {
+      exercises.remove(exercise);
       exercises.add(newExercise);
     });
     _showSnackBar(context: context, message: 'Exercise added');

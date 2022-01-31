@@ -34,6 +34,7 @@ class _WorkoutsListState extends State<WorkoutsList> {
     _showSnackBar(context: context, message: 'Adding workout...');
     Workout newWorkout = await dbHelper.upsertWorkout(workout);
     setState(() {
+      workouts.remove(workout);
       workouts.add(newWorkout);
       workouts.sort((a, b) => b.dateTime.compareTo(a.dateTime));
     });

@@ -48,18 +48,6 @@ class AddExerciseFormState extends State<AddExerciseForm> {
         ExerciseNameInput(
             initialValue: exercise.name, onChange: (v) => exercise.name = v),
         ..._progressionInputs(),
-        Center(
-          child: ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                setState(() => exercise.progressions.add(Progression.empty(
-                    rank: exercise.progressions.length,
-                    exerciseId: exercise.id ?? -1)));
-              }
-            },
-            child: Text('Add another progression'),
-          ),
-        ),
       ],
     );
   }
@@ -84,6 +72,16 @@ class AddExerciseFormState extends State<AddExerciseForm> {
             child: _exerciseInput(),
           ),
         ),
+      ),
+      floatingActionButton: ElevatedButton(
+        onPressed: () {
+          if (_formKey.currentState!.validate()) {
+            setState(() => exercise.progressions.add(Progression.empty(
+                rank: exercise.progressions.length,
+                exerciseId: exercise.id ?? -1)));
+          }
+        },
+        child: Text('Add Progression'),
       ),
     );
   }

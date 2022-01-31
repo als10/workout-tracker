@@ -14,11 +14,10 @@ class ProgressionInput extends StatelessWidget {
   Widget build(BuildContext context) {
     _controller.text = initialValue;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Column(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
         children: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+          Expanded(
             child: TextFormField(
               controller: _controller,
               style: Theme.of(context).textTheme.bodyText2,
@@ -40,7 +39,7 @@ class ProgressionInput extends StatelessWidget {
           ),
           if (deleteProgression != null)
             IconButton(
-              icon: Icon(Icons.delete),
+              icon: Icon(Icons.remove),
               onPressed: () => deleteProgression!(),
             ),
         ],

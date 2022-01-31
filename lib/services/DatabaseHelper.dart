@@ -53,26 +53,6 @@ class DatabaseHelper {
     );
   }
 
-  // Future<List<Workout>> fetchWorkouts({int? id}) async {
-  //   List<Map<String, dynamic>> workoutsMapList = id == null
-  //       ? await db.query(
-  //           'workouts',
-  //           orderBy: 'dateTime DESC',
-  //         )
-  //       : await db.query(
-  //           'workouts',
-  //           where: 'id = ?',
-  //           whereArgs: [id],
-  //         );
-  //
-  //   List<Workout> workouts = [];
-  //   for (Map<String, dynamic> workoutMap in workoutsMapList) {
-  //     workoutMap["sets"] = await fetchSets(workoutId: workoutMap["id"]);
-  //     workouts.add(Workout.fromMap(workoutMap));
-  //   }
-  //   return workouts;
-  // }
-
   Future<List<Workout>> fetchWorkouts() async {
     List<Map<String, dynamic>> workoutsMapList = await db.query('workouts');
 

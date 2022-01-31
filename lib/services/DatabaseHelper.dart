@@ -26,7 +26,7 @@ class DatabaseHelper {
           CREATE TABLE progressions (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT NOT NULL,
-          rank INT NOT NULL UNIQUE,
+          rank INT NOT NULL,
           exerciseId INTEGER NOT NULL,
           FOREIGN KEY (exerciseId) REFERENCES exercises (id) ON DELETE CASCADE
         )''');

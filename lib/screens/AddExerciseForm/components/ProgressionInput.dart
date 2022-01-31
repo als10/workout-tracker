@@ -60,6 +60,10 @@ class ProgressionInput extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
+          Padding(
+            padding: EdgeInsets.only(right: 8.0),
+            child: Icon(Icons.menu),
+          ),
           Expanded(
             child: TextFormField(
               controller: _controller,

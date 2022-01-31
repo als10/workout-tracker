@@ -26,6 +26,7 @@ class AddExerciseFormState extends State<AddExerciseForm> {
 
   void _save(context) {
     if (_formKey.currentState!.validate()) {
+      exercise.updateRanks();
       widget.upsert(exercise);
       Navigator.of(context).pop();
     }

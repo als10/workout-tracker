@@ -21,6 +21,14 @@ class Exercise {
       "name": this.name.trim(),
     };
   }
+
+  void updateRanks() {
+    this.progressions = this.progressions.asMap()
+      .map((int index, Progression p) {
+        p.rank = index;
+        return MapEntry(index, p);
+      }).values.toList();
+  }
 }
 
 class Progression {

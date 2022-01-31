@@ -20,31 +20,34 @@ class _ExerciseSetInputState extends State<ExerciseSetInput> {
   Widget build(BuildContext context) {
     ExerciseSet set = widget.set;
 
-    List<Widget> _progressionInputs = set.sets
-        .map((ProgressionSet pset) =>
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ProgressionSetInput(set: pset, progressions: set.progressions),
-                  Column(
-                    children: [
-                      if (set.sets.length > 1)
-                        IconButton(
-                          onPressed: () => setState(() => set.sets.remove(pset)),
-                          icon: Icon(Icons.delete),
-                        ),
-                      IconButton(
-                        onPressed: () => setState(() => set.sets.add(ProgressionSet.empty())),
-                        icon: Icon(Icons.add),
-                      ),
-                    ],
-                  ),
-                ],
+    List<Widget> _progressionInputs = set.sets.asMap()
+        .map((int index, ProgressionSet pset) =>
+            MapEntry(
+              index,
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ProgressionSetInput(set: pset, progressions: set.progressions),
+                    Column(
+                      children: [
+                        if (set.sets.length > 1)
+                          IconButton(
+                            onPressed: () => setState(() => set.sets.remove(pset)),
+                            icon: Icon(Icons.remove),
+                          ),
+                        if (index == set.sets.length - 1)
+                          IconButton(
+                            onPressed: () => setState(() => set.sets.add(ProgressionSet.empty())),
+                            icon: Icon(Icons.add),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ))
-        .toList();
+            )).values.toList();
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -70,7 +73,7 @@ class _ExerciseSetInputState extends State<ExerciseSetInput> {
               if (widget.delete != null)
                 IconButton(
                   onPressed: () => widget.delete!(),
-                  icon: Icon(Icons.delete),
+                  icon: Icon(Icons.remove),
                 ),
             ],
           ),

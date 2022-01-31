@@ -22,29 +22,34 @@ class _ExerciseSetInputState extends State<ExerciseSetInput> {
 
     List<Widget> _progressionInputs = set.sets
         .map((ProgressionSet pset) =>
-            Column(
-              children: [
-                ProgressionSetInput(set: pset, progressions: set.progressions),
-                Row(
-                  children: [
-                    if (set.sets.length > 1)
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ProgressionSetInput(set: pset, progressions: set.progressions),
+                  Column(
+                    children: [
+                      if (set.sets.length > 1)
+                        IconButton(
+                          onPressed: () => setState(() => set.sets.remove(pset)),
+                          icon: Icon(Icons.delete),
+                        ),
                       IconButton(
-                        onPressed: () => setState(() => set.sets.remove(pset)),
-                        icon: Icon(Icons.delete),
+                        onPressed: () => setState(() => set.sets.add(ProgressionSet.empty())),
+                        icon: Icon(Icons.add),
                       ),
-                    IconButton(
-                      onPressed: () => setState(() => set.sets.add(ProgressionSet.empty())),
-                      icon: Icon(Icons.add),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ))
         .toList();
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Column(
+      child: Wrap(
+        runSpacing: 16.0,
         children: [
           ElevatedButton(
             onPressed: () async {

@@ -17,13 +17,13 @@ class ProgressionSetInput extends StatelessWidget {
 
     if (set.id == null) set.setProgression(progressions[0]);
 
-    return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Expanded(
+        child: Wrap(
+          spacing: 16.0,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             Container(
-              width: 100.0,
+              width: 50.0,
               child: TextFormField(
                 keyboardType: TextInputType.number,
                 controller: _repsController,
@@ -45,12 +45,12 @@ class ProgressionSetInput extends StatelessWidget {
             Text('reps of'),
             DropdownButton<String>(
               value: set.id.toString(),
-              icon: const Icon(Icons.arrow_downward),
+              icon: const Icon(Icons.arrow_drop_down_sharp),
               elevation: 16,
-              style: const TextStyle(color: Colors.deepPurple),
+              style: const TextStyle(color: Colors.blueAccent),
               underline: Container(
                 height: 2,
-                color: Colors.deepPurpleAccent,
+                color: Colors.blueAccent,
               ),
               onChanged: (String? v) {
                 if (v != null)

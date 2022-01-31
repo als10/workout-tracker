@@ -93,20 +93,6 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
             ],
           ),
           ..._getExercises(),
-          Center(
-            child: ElevatedButton(
-              onPressed: () async {
-                Exercise? selectedExercise =
-                    await _navigateToChooseExercise(context);
-                if (selectedExercise != null) {
-                  setState(() => workout.sets.add(ExerciseSet(
-                      exercise: selectedExercise,
-                      sets: [ProgressionSet.empty()])));
-                }
-              },
-              child: Text('Add another exercise'),
-            ),
-          ),
         ],
       ),
     );
@@ -132,6 +118,18 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
             child: _exerciseInput(),
           ),
         ),
+      ),
+      floatingActionButton: ElevatedButton(
+        onPressed: () async {
+          Exercise? selectedExercise =
+          await _navigateToChooseExercise(context);
+          if (selectedExercise != null) {
+            setState(() => workout.sets.add(ExerciseSet(
+                exercise: selectedExercise,
+                sets: [ProgressionSet.empty()])));
+          }
+        },
+        child: Text('Add Exercise'),
       ),
     );
   }

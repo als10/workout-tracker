@@ -28,7 +28,7 @@ class ProgressionSetInput extends StatelessWidget {
                 keyboardType: TextInputType.number,
                 controller: _repsController,
                 maxLength: 2,
-                onChanged: (v) => set.reps = int.parse(v),
+                onChanged: (String? v) { if (v != null) set.reps = int.parse(v); },
                 validator: (String? v) {
                   if (v == null || v.isEmpty || int.parse(v) == 0) {
                     return '';

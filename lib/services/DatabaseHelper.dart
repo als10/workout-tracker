@@ -44,6 +44,7 @@ class DatabaseHelper {
         )''');
   }
 
+  // path: /data/user/0/com.alstondmello.workout_tracker/databases
   Future<void> initializeDB() async {
     String path = await getDatabasesPath();
     this.db = await openDatabase(

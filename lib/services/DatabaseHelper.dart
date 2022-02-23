@@ -55,7 +55,7 @@ class DatabaseHelper {
   }
 
   Future<List<Workout>> fetchWorkouts() async {
-    List<Map<String, dynamic>> workoutsMapList = await db.query('workouts');
+    List<Map<String, dynamic>> workoutsMapList = await db.query('workouts', orderBy: 'dateTime DESC');
 
     List<Workout> workouts = [];
     for (Map<String, dynamic> workoutMap in workoutsMapList) {

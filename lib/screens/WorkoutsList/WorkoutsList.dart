@@ -1,6 +1,7 @@
 import 'package:date_picker_timeline/date_picker_timeline.dart' as Timeline;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 import 'package:workout_tracker/models/Workout.dart';
 import 'package:workout_tracker/screens/AddWorkoutForm/AddWorkoutForm.dart';
@@ -16,6 +17,8 @@ class WorkoutsList extends StatefulWidget {
 class _WorkoutsListState extends State<WorkoutsList> {
   late DatabaseHelper dbHelper;
   late List<Workout> workouts;
+  late DateTime selectedDate;
+  Timeline.DatePickerController datePickerController = Timeline.DatePickerController();
 
   void _getAllWorkouts() async {
     await dbHelper.initializeDB();
@@ -30,6 +33,7 @@ class _WorkoutsListState extends State<WorkoutsList> {
     super.initState();
     dbHelper = DatabaseHelper();
     workouts = [];
+    selectedDate = DateTime.now();
     _getAllWorkouts();
   }
 
@@ -110,6 +114,10 @@ class _WorkoutsListState extends State<WorkoutsList> {
       }
     }
 
+    if (workouts.length == 0) return Center(child: Text('No workouts yet!'));
+
+    ItemScrollController itemScrollController = ItemScrollController();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -123,12 +131,20 @@ class _WorkoutsListState extends State<WorkoutsList> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      'Today',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+                    TextButton(
+                      child: Text(
+                        'Today',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
+                      onPressed: () {
+                        setState(() {
+                          selectedDate = DateTime.now();
+                          datePickerController.animateToDate(DateTime.now());
+                        });
+                      },
                     ),
                     Spacer(),
                     IconButton(
@@ -139,19 +155,41 @@ class _WorkoutsListState extends State<WorkoutsList> {
                 ),
               ),
               Timeline.DatePicker(
-                DateTime.now(),
+                workouts[workouts.length - 1].dateTime,
                 initialSelectedDate: DateTime.now(),
+                controller: datePickerController,
                 selectionColor: Colors.blue,
                 selectedTextColor: Colors.white,
-                onDateChange: (date) {},
+                daysCount: (workouts[0].dateTime
+                    .difference(workouts[workouts.length - 1].dateTime).inHours / 24)
+                    .round() + 1,
+                onDateChange: (date) {
+                  setState(() {
+                    int index;
+                    List<DateTime> dates = [date];
+                    do {
+                      date = dates.removeAt(0);
+                      String formattedDate = DateFormat('MMMM d').format(date).toUpperCase();
+                      index = formattedWorkouts.indexWhere((m) => m['date'] == formattedDate);
+                      dates.add(date.add(Duration(days: 1)));
+                      dates.add(date.subtract(Duration(days: 1)));
+                    } while (index == -1);
+                    itemScrollController.scrollTo(
+                      index: index,
+                      duration: Duration(seconds: 1),
+                      curve: Curves.easeInOutCubic
+                    );
+                  });
+                },
               ),
             ],
           ),
         ),
       ),
-      body: ListView.builder(
+      body: ScrollablePositionedList.builder(
         padding: EdgeInsets.symmetric(vertical: 8.0),
         itemCount: formattedWorkouts.length,
+        itemScrollController: itemScrollController,
         itemBuilder: (context, index) {
           Map<String, dynamic> formattedWorkout = formattedWorkouts[index];
           String date = formattedWorkout['date'];

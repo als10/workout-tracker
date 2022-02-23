@@ -29,16 +29,24 @@ class WorkoutListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ListTile(
-          title:
-              Text(DateFormat('h:mm a - MMM d, yyyy').format(workout.dateTime)),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: workout.sets
-                .map((ExerciseSet set) => SetListItem(set: set))
-                .toList(),
+        Padding(
+          padding: EdgeInsets.all(4),
+          child: ListTile(
+            title: Text(
+              DateFormat('h:mm a').format(workout.dateTime),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: workout.sets
+                  .map((ExerciseSet set) => SetListItem(set: set))
+                  .toList(),
+            ),
+            onTap: () => _navigateToUpdateWorkout(context),
           ),
-          onTap: () => _navigateToUpdateWorkout(context),
         ),
         Divider(),
       ],

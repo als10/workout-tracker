@@ -1,4 +1,7 @@
+import 'package:date_picker_timeline/date_picker_timeline.dart' as Timeline;
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:sticky_headers/sticky_headers.dart';
 import 'package:workout_tracker/models/Workout.dart';
 import 'package:workout_tracker/screens/AddWorkoutForm/AddWorkoutForm.dart';
 import 'package:workout_tracker/services/DatabaseHelper.dart';
@@ -92,61 +95,127 @@ class _WorkoutsListState extends State<WorkoutsList> {
 
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> formattedWorkouts = [];
+    String prevDate = '';
+    for (Workout workout in workouts) {
+      String formattedDate = DateFormat('MMMM d').format(workout.dateTime).toUpperCase();
+      if (prevDate == formattedDate) {
+        formattedWorkouts[formattedWorkouts.length - 1]['workouts'].add(workout);
+      } else {
+        formattedWorkouts.add({
+          'date': formattedDate,
+          'workouts': [workout],
+        });
+        prevDate = formattedDate;
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Workouts'),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        bottom: PreferredSize(
+          preferredSize: Size(0, 85),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Today',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Spacer(),
+                    IconButton(
+                      onPressed: () => _navigateToAddWorkout(context),
+                      icon: Icon(Icons.add),
+                    ),
+                  ],
+                ),
+              ),
+              Timeline.DatePicker(
+                DateTime.now(),
+                initialSelectedDate: DateTime.now(),
+                selectionColor: Colors.blue,
+                selectedTextColor: Colors.white,
+                onDateChange: (date) {},
+              ),
+            ],
+          ),
+        ),
       ),
       body: ListView.builder(
         padding: EdgeInsets.symmetric(vertical: 8.0),
-        itemCount: workouts.length,
+        itemCount: formattedWorkouts.length,
         itemBuilder: (context, index) {
-          final Workout workout = workouts[index];
-          return Dismissible(
-            confirmDismiss: (direction) => _confirmDelete(context),
-            direction: DismissDirection.endToStart,
-            key: Key(workout.id.toString()),
-            onDismissed: (direction) {
-              setState(() {
-                workouts.removeAt(index);
-              });
-              _showSnackBar(
-                  context: context,
-                  message: 'Deleted workout',
-                  action: new SnackBarAction(
-                    label: 'UNDO',
-                    onPressed: () {
-                      setState(() => workouts.insert(index, workout));
-                    },
+          Map<String, dynamic> formattedWorkout = formattedWorkouts[index];
+          String date = formattedWorkout['date'];
+          List<Workout> workouts = formattedWorkout['workouts'];
+          return StickyHeader(
+            header: Container(
+              height: 50.0,
+              color: Colors.grey[200],
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              alignment: Alignment.centerLeft,
+              child: Center(
+                child: Text(
+                  date,
+                  style: TextStyle(
+                    color: Colors.black54,
+                    letterSpacing: 2,
                   ),
-                  handleOnDismissed: (reason) {
-                    if (reason != SnackBarClosedReason.action) {
-                      _deleteWorkout(workout);
-                    }
-                  });
-            },
-            background: Container(
-              alignment: AlignmentDirectional.centerEnd,
-              color: Colors.red,
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(0.0, 0.0, 16.0, 0.0),
-                child: Icon(
-                  Icons.delete,
-                  color: Colors.white,
-                ),
+                )
               ),
             ),
-            child: WorkoutListItem(
-                workout: workout, updateWorkout: _upsertWorkout),
+            content: Column(
+              children: workouts.map((Workout workout) {
+                return Dismissible(
+                  confirmDismiss: (direction) => _confirmDelete(context),
+                  direction: DismissDirection.endToStart,
+                  key: Key(workout.id.toString()),
+                  onDismissed: (direction) {
+                    setState(() {
+                      workouts.removeAt(index);
+                    });
+                    _showSnackBar(
+                        context: context,
+                        message: 'Deleted workout',
+                        action: new SnackBarAction(
+                          label: 'UNDO',
+                          onPressed: () {
+                            setState(() => workouts.insert(index, workout));
+                          },
+                        ),
+                        handleOnDismissed: (reason) {
+                          if (reason != SnackBarClosedReason.action) {
+                            _deleteWorkout(workout);
+                          }
+                        });
+                  },
+                  background: Container(
+                    alignment: AlignmentDirectional.centerEnd,
+                    color: Colors.red,
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(0.0, 0.0, 16.0, 0.0),
+                      child: Icon(
+                        Icons.delete,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  child: WorkoutListItem(
+                      workout: workout, updateWorkout: _upsertWorkout),
+                );
+              }).toList(),
+            ),
           );
         },
       ),
-      floatingActionButton: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: FloatingActionButton(
-            onPressed: () => _navigateToAddWorkout(context),
-            child: const Icon(Icons.add),
-            backgroundColor: Colors.blueAccent,
-          )),
     );
   }
 }

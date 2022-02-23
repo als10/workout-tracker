@@ -10,23 +10,42 @@ class SetListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.only(top: 8.0),
-        child: Row(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4.0),
-              child:
-                  Text(set.name, style: Theme.of(context).textTheme.bodyText1),
+        padding: EdgeInsets.only(top: 8),
+        child: Card(
+          child: Padding(
+            padding: EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  set.name,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                Divider(),
+                ...set.sets.asMap().map((int i, ProgressionSet pset) =>
+                  MapEntry(
+                    i,
+                    Padding(
+                      padding: EdgeInsets.all(4),
+                      child: Row(
+                        children: [
+                          Text('SET ${i+1}'),
+                          Spacer(),
+                          Text(pset.name),
+                          Spacer(),
+                          Text('${pset.reps} reps')
+                        ],
+                      ),
+                    ),
+                  )
+                ).values.toList()
+              ],
             ),
-            Column(
-              children: set.sets.map((ProgressionSet pset) {
-                return Text(
-                  '${pset.name}: ${pset.reps.toString()} reps',
-                  style: Theme.of(context).textTheme.bodyText2,
-                );
-              }).toList(),
-            ),
-          ],
-        ));
+          ),
+        ),
+    );
   }
 }

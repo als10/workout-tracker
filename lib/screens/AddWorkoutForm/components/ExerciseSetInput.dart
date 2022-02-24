@@ -21,35 +21,66 @@ class _ExerciseSetInputState extends State<ExerciseSetInput> {
     ExerciseSet set = widget.set;
 
     List<Widget> _progressionInputs = set.sets.asMap()
-        .map((int index, ProgressionSet pset) =>
+        .map((int i, ProgressionSet pset) =>
             MapEntry(
-              index,
+              i,
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ProgressionSetInput(set: pset, progressions: set.progressions),
-                    Column(
-                      children: [
-                        if (set.sets.length > 1)
-                          IconButton(
-                            onPressed: () => setState(() => set.sets.remove(pset)),
-                            icon: Icon(Icons.remove),
-                          ),
-                        if (index == set.sets.length - 1)
-                          IconButton(
-                            onPressed: () => setState(() => set.sets.add(ProgressionSet.empty())),
-                            icon: Icon(Icons.add),
-                          ),
-                      ],
-                    ),
-                  ],
+                padding: EdgeInsets.all(4),
+                child: ProgressionSetInput(
+                  index: i,
+                  set: pset,
+                  progressions: set.progressions,
+                  delete: set.sets.length > 1
+                    ? () => setState(() => set.sets.remove(pset))
+                    : null,
                 ),
               ),
             )).values.toList();
 
-    return Padding(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Card(
+          child: Padding(
+            padding: EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextButton(
+                  child: Text(
+                    set.name,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  onPressed: () async {
+                    Exercise? selectedExercise =
+                    await widget.navigateToChooseExercise(context);
+                    if (selectedExercise != null) {
+                      setState(() {
+                        set.setExercise(selectedExercise);
+                        set.sets = [ProgressionSet.empty()];
+                      });
+                    }
+                  },
+                ),
+                Divider(),
+                ..._progressionInputs,
+              ],
+            ),
+          ),
+        ),
+        ElevatedButton.icon(
+          onPressed: () => setState(() => set.sets.add(ProgressionSet.empty())),
+          icon: Icon(Icons.add),
+          label: Text('Add set'),
+        ),
+      ],
+    );
+
+    Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Wrap(
         runSpacing: 16.0,

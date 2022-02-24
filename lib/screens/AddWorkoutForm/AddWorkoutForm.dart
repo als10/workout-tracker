@@ -67,69 +67,73 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
   }
 
   List<Widget> _getExercises() => workout.sets
-      .map((ExerciseSet set) => ExerciseSetInput(
-            set: set,
-            delete: workout.sets.length > 1
-                ? () => setState(() => workout.sets.remove(set))
-                : null,
-            navigateToChooseExercise: _navigateToChooseExercise,
-          ))
-      .toList();
-
-  Widget _exerciseInput() {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              IconButton(
-                icon: Icon(Icons.calendar_today_rounded),
-                onPressed: () => _selectDateTime(context),
-              ),
-              Text(DateFormat('h:mm a - MMM d, yyyy').format(workout.dateTime),
-                  style: Theme.of(context).textTheme.headline6),
-            ],
+      .map((ExerciseSet set) =>
+        SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: ExerciseSetInput(
+              set: set,
+              delete: workout.sets.length > 1
+                  ? () => setState(() => workout.sets.remove(set))
+                  : null,
+              navigateToChooseExercise: _navigateToChooseExercise,
+            ),
           ),
-          ..._getExercises(),
-        ],
-      ),
-    );
-  }
+        )
+      ).toList();
 
   @override
   Widget build(BuildContext context) {
+    PageController controller = PageController();
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Workout'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: () => _save(context),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: _exerciseInput(),
-          ),
+        backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        title: Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.close, color: Colors.black45),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            IconButton(
+              icon: Icon(Icons.calendar_today_rounded, color: Colors.blue),
+              onPressed: () => _selectDateTime(context),
+            ),
+            Text(
+              DateFormat('h:mm a - MMM d, yyyy').format(workout.dateTime),
+              style: TextStyle(color: Colors.black)
+            ),
+            Spacer(),
+            IconButton(
+              icon: Icon(Icons.save, color: Colors.blue),
+              onPressed: () => _save(context),
+            ),
+          ],
         ),
       ),
-      floatingActionButton: ElevatedButton(
+      body: Form(
+        key: _formKey,
+        child: PageView(
+          controller: controller,
+          children: _getExercises(),
+        ),
+      ),
+      floatingActionButton: ElevatedButton.icon(
         onPressed: () async {
           Exercise? selectedExercise =
-          await _navigateToChooseExercise(context);
+            await _navigateToChooseExercise(context);
           if (selectedExercise != null) {
-            setState(() => workout.sets.add(ExerciseSet(
-                exercise: selectedExercise,
-                sets: [ProgressionSet.empty()])));
+            setState(() {
+              workout.sets.add(ExerciseSet(
+                  exercise: selectedExercise,
+                  sets: [ProgressionSet.empty()]));
+              controller.jumpToPage(workout.sets.length);
+            });
           }
         },
-        child: Text('Add Exercise'),
+        icon: Icon(Icons.add),
+        label: Text('Add Exercise'),
       ),
     );
   }

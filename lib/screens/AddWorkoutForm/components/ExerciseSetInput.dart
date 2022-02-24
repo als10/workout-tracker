@@ -79,38 +79,5 @@ class _ExerciseSetInputState extends State<ExerciseSetInput> {
         ),
       ],
     );
-
-    Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Wrap(
-        runSpacing: 16.0,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ElevatedButton(
-                onPressed: () async {
-                  Exercise? selectedExercise =
-                  await widget.navigateToChooseExercise(context);
-                  if (selectedExercise != null) {
-                    setState(() {
-                      set.setExercise(selectedExercise);
-                      set.sets = [ProgressionSet.empty()];
-                    });
-                  }
-                },
-                child: Text(set.name),
-              ),
-              if (widget.delete != null)
-                IconButton(
-                  onPressed: () => widget.delete!(),
-                  icon: Icon(Icons.remove),
-                ),
-            ],
-          ),
-          ..._progressionInputs,
-        ],
-      ),
-    );
   }
 }

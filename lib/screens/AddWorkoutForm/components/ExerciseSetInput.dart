@@ -5,11 +5,10 @@ import 'package:workout_tracker/screens/AddWorkoutForm/components/ProgressionSet
 
 class ExerciseSetInput extends StatefulWidget {
   ExerciseSet set;
-  Function? delete;
   Function navigateToChooseExercise;
 
   ExerciseSetInput(
-      {required this.set, this.delete, required this.navigateToChooseExercise});
+      {required this.set, required this.navigateToChooseExercise});
 
   @override
   _ExerciseSetInputState createState() => _ExerciseSetInputState();

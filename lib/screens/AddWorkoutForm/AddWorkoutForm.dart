@@ -73,9 +73,6 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
             padding: EdgeInsets.all(8.0),
             child: ExerciseSetInput(
               set: set,
-              delete: workout.sets.length > 1
-                  ? () => setState(() => workout.sets.remove(set))
-                  : null,
               navigateToChooseExercise: _navigateToChooseExercise,
             ),
           ),
@@ -119,22 +116,37 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
           children: _getExercises(),
         ),
       ),
-      floatingActionButton: ElevatedButton.icon(
-        onPressed: () async {
-          Exercise? selectedExercise =
-            await _navigateToChooseExercise(context);
-          if (selectedExercise != null) {
-            setState(() {
-              workout.sets.add(ExerciseSet(
-                  exercise: selectedExercise,
-                  sets: [ProgressionSet.empty()]));
-              controller.jumpToPage(workout.sets.length);
-            });
-          }
-        },
-        icon: Icon(Icons.add),
-        label: Text('Add Exercise'),
-      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Padding(
+        padding: EdgeInsets.all(16),
+        child: Row(
+          children: [
+            if (workout.sets.length > 1)
+              ElevatedButton.icon(
+                onPressed: () => setState(() => workout.sets.removeAt(controller.page!.toInt())),
+                icon: Icon(Icons.delete),
+                label: Text('Remove Exercise'),
+              ),
+            Spacer(),
+            ElevatedButton.icon(
+              onPressed: () async {
+                Exercise? selectedExercise =
+                await _navigateToChooseExercise(context);
+                if (selectedExercise != null) {
+                  setState(() {
+                    workout.sets.add(ExerciseSet(
+                        exercise: selectedExercise,
+                        sets: [ProgressionSet.empty()]));
+                    controller.jumpToPage(workout.sets.length);
+                  });
+                }
+              },
+              icon: Icon(Icons.add),
+              label: Text('Add Exercise'),
+            ),
+          ],
+        ),
+      )
     );
   }
 }

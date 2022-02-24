@@ -27,29 +27,32 @@ class WorkoutListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.all(4),
-          child: ListTile(
-            title: Text(
-              DateFormat('h:mm a').format(workout.dateTime),
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              ),
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: workout.sets
-                  .map((ExerciseSet set) => SetListItem(set: set))
-                  .toList(),
-            ),
-            onTap: () => _navigateToUpdateWorkout(context),
-          ),
-        ),
-        Divider(),
-      ],
+    return ExpansionTile(
+      title: Text(
+        DateFormat('h:mm a').format(workout.dateTime),
+        style: TextStyle(fontSize: 20),
+      ),
+      children: workout.sets
+          .map((ExerciseSet set) =>
+            SetListItem(
+              set: set,
+              navigate: () => _navigateToUpdateWorkout(context)
+            )
+          ).toList(),
     );
+
+    //   Column(
+    //   children: [
+    //     Padding(
+    //       padding: EdgeInsets.all(4),
+    //       child: ListTile(
+    //         title: ,
+    //         subtitle: ,
+    //         onTap: () => _navigateToUpdateWorkout(context),
+    //       ),
+    //     ),
+    //     Divider(),
+    //   ],
+    // );
   }
 }

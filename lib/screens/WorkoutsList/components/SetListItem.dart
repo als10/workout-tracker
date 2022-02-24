@@ -4,13 +4,16 @@ import 'package:workout_tracker/models/ExerciseSet.dart';
 
 class SetListItem extends StatelessWidget {
   final ExerciseSet set;
+  final Function navigate;
 
-  const SetListItem({required this.set});
+  const SetListItem({required this.set, required this.navigate});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: EdgeInsets.only(top: 8),
+    return GestureDetector(
+      onTap: () => navigate(),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
         child: Card(
           child: Padding(
             padding: EdgeInsets.all(8),
@@ -26,26 +29,27 @@ class SetListItem extends StatelessWidget {
                 ),
                 Divider(),
                 ...set.sets.asMap().map((int i, ProgressionSet pset) =>
-                  MapEntry(
-                    i,
-                    Padding(
-                      padding: EdgeInsets.all(4),
-                      child: Row(
-                        children: [
-                          Text('SET ${i+1}'),
-                          Spacer(),
-                          Text(pset.name),
-                          Spacer(),
-                          Text('${pset.reps} reps')
-                        ],
+                    MapEntry(
+                      i,
+                      Padding(
+                        padding: EdgeInsets.all(4),
+                        child: Row(
+                          children: [
+                            Text('SET ${i+1}'),
+                            Spacer(),
+                            Text(pset.name),
+                            Spacer(),
+                            Text('${pset.reps} reps')
+                          ],
+                        ),
                       ),
-                    ),
-                  )
+                    )
                 ).values.toList()
               ],
             ),
           ),
         ),
+      ),
     );
   }
 }

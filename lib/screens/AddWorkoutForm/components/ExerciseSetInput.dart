@@ -16,27 +16,27 @@ class ExerciseSetInput extends StatefulWidget {
 }
 
 class _ExerciseSetInputState extends State<ExerciseSetInput> {
+  List<Widget> _progressionInputs(ExerciseSet set) =>
+    set.sets.asMap()
+      .map((int i, ProgressionSet pset) =>
+      MapEntry(
+        i,
+        Padding(
+          padding: EdgeInsets.all(4),
+          child: ProgressionSetInput(
+            index: i,
+            set: pset,
+            progressions: set.progressions,
+            delete: set.sets.length > 1
+                ? () => setState(() => set.sets.remove(pset))
+                : null,
+          ),
+        ),
+      )).values.toList();
+
   @override
   Widget build(BuildContext context) {
     ExerciseSet set = widget.set;
-
-    List<Widget> _progressionInputs = set.sets.asMap()
-        .map((int i, ProgressionSet pset) =>
-            MapEntry(
-              i,
-              Padding(
-                padding: EdgeInsets.all(4),
-                child: ProgressionSetInput(
-                  index: i,
-                  set: pset,
-                  progressions: set.progressions,
-                  delete: set.sets.length > 1
-                    ? () => setState(() => set.sets.remove(pset))
-                    : null,
-                ),
-              ),
-            )).values.toList();
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,7 +67,7 @@ class _ExerciseSetInputState extends State<ExerciseSetInput> {
                   },
                 ),
                 Divider(),
-                ..._progressionInputs,
+                ..._progressionInputs(set),
               ],
             ),
           ),

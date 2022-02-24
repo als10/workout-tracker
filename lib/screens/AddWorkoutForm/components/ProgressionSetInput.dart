@@ -50,38 +50,30 @@ class ProgressionSetInput extends StatelessWidget {
           }).toList(),
         ),
         Spacer(),
-        Expanded(
-          child: Wrap(
-            spacing: 8,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              Container(
-                width: 32,
-                child: TextFormField(
-                  keyboardType: TextInputType.number,
-                  controller: _repsController,
-                  maxLength: 2,
-                  onChanged: (String? v) { if (v != null) set.reps = int.parse(v); },
-                  validator: (String? v) {
-                    if (v == null || v.isEmpty || int.parse(v) == 0) {
-                      return '';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Text('reps'),
-              if (delete != null)
-                Padding(
-                  padding: EdgeInsets.only(left: 4),
-                  child: IconButton(
-                    onPressed: delete!(),
-                    icon: Icon(Icons.remove),
-                  ),
-                ),
-            ],
-          )
+        Container(
+          width: 32,
+          child: TextFormField(
+            keyboardType: TextInputType.number,
+            controller: _repsController,
+            maxLength: 2,
+            onChanged: (String? v) { if (v != null) set.reps = int.parse(v); },
+            validator: (String? v) {
+              if (v == null || v.isEmpty || int.parse(v) == 0) {
+                return '';
+              }
+              return null;
+            },
+          ),
         ),
+        Text('reps'),
+        if (delete != null)
+          Padding(
+            padding: EdgeInsets.only(left: 4),
+            child: IconButton(
+              onPressed: () => delete!(),
+              icon: Icon(Icons.remove),
+            ),
+          ),
       ],
     );
   }

@@ -187,7 +187,7 @@ class _WorkoutsListState extends State<WorkoutsList> {
         ),
       ),
       body: ScrollablePositionedList.builder(
-        padding: EdgeInsets.symmetric(vertical: 8.0),
+        padding: EdgeInsets.only(bottom: 8.0),
         itemCount: formattedWorkouts.length,
         itemScrollController: itemScrollController,
         itemBuilder: (context, index) {

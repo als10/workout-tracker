@@ -68,29 +68,20 @@ class DatabaseHelper {
       List<ExerciseSet> sets = [];
       Set<int> exerciseIdsAddedSoFar = Set();
       for (Map<String, dynamic> setMap in setsMapList) {
+        Progression progression = (await fetchProgressions(progressionId: setMap['progressionId']))[0];
+        ProgressionSet progressionSet = ProgressionSet(progression: progression, reps: setMap['reps']);
+
         int exerciseId = setMap['exerciseId'];
         late ExerciseSet set;
         if (exerciseIdsAddedSoFar.contains(exerciseId)) {
           set = sets.firstWhere((ExerciseSet set) => set.id == exerciseId);
-          sets.remove(set);
+          set.sets.add(progressionSet);
         } else {
-          Map<String, dynamic> exerciseMap = (await db.query(
-            'exercises',
-            where: 'id = ?',
-            whereArgs: [exerciseId],
-          ))[0];
-          set = ExerciseSet.fromMap(exerciseMap);
+          Exercise exercise = (await fetchExercises(exerciseId: exerciseId))[0];
+          set = ExerciseSet(exercise: exercise, sets: [progressionSet]);
+          sets.add(set);
           exerciseIdsAddedSoFar.add(exerciseId);
         }
-
-        Map<String, dynamic> progressionMap = (await db.query(
-          'progressions',
-          where: 'id = ?',
-          whereArgs: [setMap['progressionId']],
-        ))[0];
-        set.sets
-            .add(ProgressionSet.fromMap(progressionMap, reps: setMap['reps']));
-        sets.add(set);
       }
 
       workouts.add(Workout.fromMap(workoutMap, sets: sets));
@@ -101,9 +92,7 @@ class DatabaseHelper {
   Future<Workout> upsertWorkout(Workout workout) async {
     if (workout.id == null) {
       workout.id = await db.insert('workouts', workout.toMap());
-      for (ExerciseSet set in workout.sets) {
-        await insertSets(set, workoutId: workout.id!);
-      }
+      await insertSets(workout.sets, workoutId: workout.id!);
     } else {
       await db.update(
         'workouts',
@@ -111,9 +100,7 @@ class DatabaseHelper {
         where: 'id = ?',
         whereArgs: [workout.id],
       );
-      for (ExerciseSet set in workout.sets) {
-        await updateSets(set, workoutId: workout.id!);
-      }
+      await updateSets(workout.sets, workoutId: workout.id!);
     }
     return workout;
   }
@@ -123,35 +110,31 @@ class DatabaseHelper {
     return true;
   }
 
-  Future<ExerciseSet> insertSets(ExerciseSet set,
+  Future<List<ExerciseSet>> insertSets(List<ExerciseSet> sets,
       {required int workoutId}) async {
-    for (ProgressionSet pset in set.sets) {
-      await db.insert('sets', pset.toMap(workoutId: workoutId));
+    for (ExerciseSet eset in sets) {
+      for (ProgressionSet pset in eset.sets) {
+        await db.insert('sets', pset.toMap(workoutId: workoutId));
+      }
     }
-    return set;
+    return sets;
   }
 
-  Future<ExerciseSet> updateSets(ExerciseSet set,
+  Future<List<ExerciseSet>> updateSets(List<ExerciseSet> sets,
       {required int workoutId}) async {
     await db.delete('sets', where: 'workoutId = ?', whereArgs: [workoutId]);
-    await insertSets(set, workoutId: workoutId);
-    return set;
+    await insertSets(sets, workoutId: workoutId);
+    return sets;
   }
 
-  Future<List<Exercise>> fetchExercises() async {
-    List<Map<String, dynamic>> exerciseMapList = await db.query('exercises');
+  Future<List<Exercise>> fetchExercises({int? exerciseId}) async {
+    List<Map<String, dynamic>> exerciseMapList = exerciseId == null
+      ? await db.query('exercises')
+      : await db.query('exercises', where: 'id = ?', whereArgs: [exerciseId]);
 
     List<Exercise> exercises = [];
     for (Map<String, dynamic> exerciseMap in exerciseMapList) {
-      List<Map<String, dynamic>> progressionMapList = await db.query(
-          'progressions',
-          where: 'exerciseId = ?',
-          whereArgs: [exerciseMap['id']]);
-      List<Progression> progressions = progressionMapList
-          .map((Map<String, dynamic> progressionMap) =>
-              Progression.fromMap(progressionMap))
-          .toList();
-
+      List<Progression> progressions = await fetchProgressions(exerciseId: exerciseMap['id']);
       exercises.add(Exercise.fromMap(exerciseMap, progressions: progressions));
     }
     return exercises;
@@ -176,6 +159,20 @@ class DatabaseHelper {
   Future<bool> deleteExercise(Exercise exercise) async {
     await db.delete('exercises', where: 'id = ?', whereArgs: [exercise.id]);
     return true;
+  }
+
+  Future<List<Progression>> fetchProgressions({int? exerciseId, int? progressionId}) async {
+    List<Map<String, dynamic>> progressionMapList = exerciseId == null && progressionId == null
+      ? await db.query('progressions')
+      : await db.query(
+        'progressions',
+        where: exerciseId != null ? 'exerciseId = ?' : 'id = ?',
+        whereArgs: exerciseId != null ? [exerciseId] : [progressionId]);
+    List<Progression> progressions = progressionMapList
+        .map((Map<String, dynamic> progressionMap) =>
+        Progression.fromMap(progressionMap))
+        .toList();
+    return progressions;
   }
 
   Future<Progression> upsertProgression(Progression progression,

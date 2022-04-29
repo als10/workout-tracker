@@ -98,7 +98,7 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
               onPressed: () => _selectDateTime(context),
             ),
             Text(
-              DateFormat('h:mm a - MMM d, yyyy').format(workout.dateTime),
+              DateFormat('h:mm a, d MMM').format(workout.dateTime),
               style: TextStyle(color: Colors.black)
             ),
             Spacer(),

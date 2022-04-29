@@ -40,19 +40,5 @@ class WorkoutListItem extends StatelessWidget {
             )
           ).toList(),
     );
-
-    //   Column(
-    //   children: [
-    //     Padding(
-    //       padding: EdgeInsets.all(4),
-    //       child: ListTile(
-    //         title: ,
-    //         subtitle: ,
-    //         onTap: () => _navigateToUpdateWorkout(context),
-    //       ),
-    //     ),
-    //     Divider(),
-    //   ],
-    // );
   }
 }

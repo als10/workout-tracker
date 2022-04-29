@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:workout_tracker/models/Exercise.dart';
 import 'package:workout_tracker/models/ExerciseSet.dart';
 
-class ProgressionSetInput extends StatelessWidget {
+class ProgressionSetInput extends StatefulWidget {
   int index;
   ProgressionSet set;
   List<Progression> progressions;
@@ -16,31 +16,36 @@ class ProgressionSetInput extends StatelessWidget {
     this.delete,
   });
 
+  @override
+  State<ProgressionSetInput> createState() => _ProgressionSetInputState();
+}
+
+class _ProgressionSetInputState extends State<ProgressionSetInput> {
   late TextEditingController _repsController;
 
   @override
   Widget build(BuildContext context) {
+    ProgressionSet set = widget.set;
+    List<Progression> progressions = widget.progressions;
     _repsController = TextEditingController(text: set.reps.toString());
 
     if (set.id == null) set.setProgression(progressions[0]);
 
     return Row(
       children: [
-        Text('SET ${index+1}'),
+        Text('SET ${widget.index + 1}'),
         Spacer(),
         DropdownButton<String>(
           value: set.id.toString(),
-          icon: Icon(Icons.arrow_drop_down_sharp),
+          icon: Icon(Icons.arrow_drop_down),
           elevation: 16,
           style: TextStyle(color: Colors.blueAccent),
-          underline: Container(
-            height: 2,
-            color: Colors.blueAccent,
-          ),
           onChanged: (String? v) {
             if (v != null)
-              set.setProgression(progressions
-                  .firstWhere((Progression p) => p.id == int.parse(v)));
+              setState(() {
+                set.setProgression(progressions
+                    .firstWhere((Progression p) => p.id == int.parse(v)));
+              });
           },
           items: progressions.map((Progression p) {
             return DropdownMenuItem(
@@ -50,7 +55,7 @@ class ProgressionSetInput extends StatelessWidget {
           }).toList(),
         ),
         Spacer(),
-        Container(
+        SizedBox(
           width: 32,
           child: TextFormField(
             keyboardType: TextInputType.number,
@@ -66,11 +71,11 @@ class ProgressionSetInput extends StatelessWidget {
           ),
         ),
         Text('reps'),
-        if (delete != null)
+        if (widget.delete != null)
           Padding(
             padding: EdgeInsets.only(left: 4),
             child: IconButton(
-              onPressed: () => delete!(),
+              onPressed: () => widget.delete!(),
               icon: Icon(Icons.remove),
             ),
           ),
@@ -78,3 +83,4 @@ class ProgressionSetInput extends StatelessWidget {
     );
   }
 }
+

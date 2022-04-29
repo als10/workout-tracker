@@ -21,7 +21,7 @@ class _ExerciseSetInputState extends State<ExerciseSetInput> {
       MapEntry(
         i,
         Padding(
-          padding: EdgeInsets.all(4),
+          padding: EdgeInsets.symmetric(horizontal: 4),
           child: ProgressionSetInput(
             index: i,
             set: pset,
@@ -40,18 +40,33 @@ class _ExerciseSetInputState extends State<ExerciseSetInput> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Card(
-          child: Padding(
-            padding: EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextButton(
-                  child: Text(
-                    set.name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+        Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  'EXERCISE',
+                  style: TextStyle(
+                    color: Colors.black45,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              Card(
+                child: TextButton(
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      set.name,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                      textAlign: TextAlign.left,
                     ),
                   ),
                   onPressed: () async {
@@ -65,16 +80,45 @@ class _ExerciseSetInputState extends State<ExerciseSetInput> {
                     }
                   },
                 ),
-                Divider(),
-                ..._progressionInputs(set),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-        ElevatedButton.icon(
-          onPressed: () => setState(() => set.sets.add(ProgressionSet.empty())),
-          icon: Icon(Icons.add),
-          label: Text('Add set'),
+        Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  'SETS',
+                  style: TextStyle(
+                    color: Colors.black45,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              Card(
+                child: Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _progressionInputs(set),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 16),
+          child: ElevatedButton.icon(
+            onPressed: () => setState(() => set.sets.add(ProgressionSet.empty())),
+            icon: Icon(Icons.add),
+            label: Text('Add set'),
+          ),
         ),
       ],
     );

@@ -34,11 +34,26 @@ class AddExerciseFormState extends State<AddExerciseForm> {
 
   Widget _exerciseInput() {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ExerciseNameInput(
             initialValue: exercise.name, onChange: (v) => exercise.name = v),
         ProgressionInputs(progressions: exercise.progressions),
+        Padding(
+          padding: EdgeInsets.only(left: 16),
+          child: ElevatedButton.icon(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                setState(() => exercise.progressions.add(Progression.empty(
+                    rank: exercise.progressions.length,
+                    exerciseId: exercise.id ?? -1)));
+              }
+            },
+            icon: Icon(Icons.add),
+            label: Text('Add progression'),
+          ),
+        ),
       ],
     );
   }
@@ -50,7 +65,7 @@ class AddExerciseFormState extends State<AddExerciseForm> {
         title: Text('Add Exercise'),
         actions: [
           IconButton(
-            icon: Icon(Icons.save),
+            icon: Icon(Icons.save, color: Colors.blue),
             onPressed: () => _save(context),
           )
         ],
@@ -63,16 +78,6 @@ class AddExerciseFormState extends State<AddExerciseForm> {
             child: _exerciseInput(),
           ),
         ),
-      ),
-      floatingActionButton: ElevatedButton(
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            setState(() => exercise.progressions.add(Progression.empty(
-                rank: exercise.progressions.length,
-                exerciseId: exercise.id ?? -1)));
-          }
-        },
-        child: Text('Add Progression'),
       ),
     );
   }

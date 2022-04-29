@@ -13,24 +13,43 @@ class ExerciseNameInput extends StatelessWidget {
   Widget build(BuildContext context) {
     _controller.text = initialValue;
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-      child: TextFormField(
-        controller: _controller,
-        style: Theme.of(context).textTheme.bodyText2,
-        decoration: InputDecoration(
-          labelStyle: Theme.of(context).textTheme.bodyText2,
-          labelText: 'Exercise Name',
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(0.0),
+      padding: EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              'EXERCISE',
+              style: TextStyle(
+                color: Colors.black45,
+                fontSize: 12,
+              ),
+            ),
           ),
-        ),
-        onChanged: (v) => onChange(v),
-        validator: (String? v) {
-          if (v == null || v.isEmpty) {
-            return 'Please enter the exercise name';
-          }
-          return null;
-        },
+          Card(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: TextFormField(
+                controller: _controller,
+                style: Theme.of(context).textTheme.bodyText2,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  isDense: true,
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (v) => onChange(v),
+                validator: (String? v) {
+                  if (v == null || v.isEmpty) {
+                    return 'Please enter the exercise name';
+                  }
+                  return null;
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

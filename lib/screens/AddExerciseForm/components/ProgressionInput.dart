@@ -13,30 +13,53 @@ class _ProgressionInputsState extends State<ProgressionInputs> {
   @override
   Widget build(BuildContext context) {
     List<Progression> progressions = widget.progressions;
-    return ReorderableListView(
-      shrinkWrap: true,
-      children: progressions
-          .map((Progression p) =>
-            ProgressionInput(
-              key: Key(p.rank.toString()),
-              initialValue: p.name,
-              onChange: (v) => p.name = v,
-              deleteProgression: progressions.length > 1
-                ? () => setState(() => progressions.remove(p))
-                : null,
-            )).toList(),
-      onReorder: (int start, int current) {
-        int i = start;
-        Progression changedProgression = progressions[start];
-        if (start < current) {
-          while (i < current) progressions[i] = progressions[++i];
-        }
-        else if (start > current) {
-          while (i > current) progressions[i] = progressions[--i];
-        }
-        progressions[current] = changedProgression;
-        setState(() {});
-      },
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              'PROGRESSIONS',
+              style: TextStyle(
+                color: Colors.black45,
+                fontSize: 12,
+              ),
+            ),
+          ),
+          Card(
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: ReorderableListView(
+                shrinkWrap: true,
+                children: progressions.map((Progression p) =>
+                  ProgressionInput(
+                      key: Key(p.rank.toString()),
+                      initialValue: p.name,
+                      onChange: (v) => p.name = v,
+                      deleteProgression: progressions.length > 1
+                          ? () => setState(() => progressions.remove(p))
+                          : null,
+                    )).toList(),
+                onReorder: (int start, int current) {
+                  int i = start;
+                  Progression changedProgression = progressions[start];
+                  if (start < current) {
+                    while (i < current) progressions[i] = progressions[++i];
+                  }
+                  else if (start > current) {
+                    while (i > current) progressions[i] = progressions[--i];
+                  }
+                  progressions[current] = changedProgression;
+                  setState(() {});
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -60,20 +83,16 @@ class ProgressionInput extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          Padding(
-            padding: EdgeInsets.only(right: 8.0),
-            child: Icon(Icons.menu),
-          ),
+          Icon(Icons.menu),
+          SizedBox(width: 16),
           Expanded(
             child: TextFormField(
               controller: _controller,
               style: Theme.of(context).textTheme.bodyText2,
               decoration: InputDecoration(
-                labelStyle: Theme.of(context).textTheme.bodyText2,
-                labelText: 'Progression Name',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(0.0),
-                ),
+                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                isDense: true,
+                border: OutlineInputBorder(),
               ),
               onChanged: (v) => onChange(v),
               validator: (String? v) {
@@ -86,7 +105,7 @@ class ProgressionInput extends StatelessWidget {
           ),
           if (deleteProgression != null)
             IconButton(
-              icon: Icon(Icons.remove),
+              icon: Icon(Icons.highlight_remove),
               onPressed: () => deleteProgression!(),
             ),
         ],

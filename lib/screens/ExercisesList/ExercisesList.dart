@@ -65,6 +65,7 @@ class _ExercisesListState extends State<ExercisesList> {
 
   @override
   Widget build(BuildContext context) {
+    exercises.sort((a, b) => a.name.compareTo(b.name));
     return Scaffold(
       appBar: AppBar(
         title: Text('Exercises'),

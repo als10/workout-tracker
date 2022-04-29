@@ -48,6 +48,21 @@ class ExerciseListItem extends StatelessWidget {
       ),
       children: [
         ..._createProgressionsList(exercise.progressions),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            TextButton.icon(
+              onPressed: () => _navigateToUpdateExercise(context),
+              icon: Icon(Icons.edit),
+              label: Text('Edit')
+            ),
+            TextButton.icon(
+                onPressed: () => _navigateToUpdateExercise(context),
+                icon: Icon(Icons.delete),
+                label: Text('Delete')
+            ),
+          ],
+        ),
         SizedBox(height: 16),
       ],
     );

@@ -48,8 +48,8 @@ class _WorkoutsListState extends State<WorkoutsList> {
     _showSnackBar(context: context, message: 'Workout added');
   }
 
-  void _deleteWorkout(Workout workout) {
-    dbHelper.deleteWorkout(workout);
+  Future<void> _deleteWorkout(Workout workout) async {
+    await dbHelper.deleteWorkout(workout);
   }
 
   Future<bool?> _confirmDelete(BuildContext context) async {
@@ -119,7 +119,6 @@ class _WorkoutsListState extends State<WorkoutsList> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
         bottom: PreferredSize(
           preferredSize: Size(0, 85),
           child: Column(
@@ -229,9 +228,10 @@ class _WorkoutsListState extends State<WorkoutsList> {
                             setState(() => workouts.insert(index, workout));
                           },
                         ),
-                        handleOnDismissed: (reason) {
+                        handleOnDismissed: (reason) async {
                           if (reason != SnackBarClosedReason.action) {
-                            _deleteWorkout(workout);
+                            await _deleteWorkout(workout);
+                            _showSnackBar(context: context, message: 'Workout deleted');
                           }
                         });
                   },

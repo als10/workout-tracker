@@ -8,13 +8,6 @@ class ExerciseListItem extends StatelessWidget {
 
   ExerciseListItem({required this.exercise, required this.updateExercise});
 
-  List<Widget> _createProgressionsList(List<Progression> progressions) {
-    List<String> progressionNames =
-        progressions.map((Progression p) => p.name).toList();
-    progressionNames.sort((a, b) => a.compareTo(b));
-    return progressionNames.map((String pname) => Text(pname)).toList();
-  }
-
   void _navigateToUpdateExercise(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (_) => AddExerciseForm(
@@ -26,17 +19,36 @@ class ExerciseListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    List<Widget> _createProgressionsList(List<Progression> progressions) {
+      progressions.sort((a, b) => a.rank - b.rank);
+      return progressions.map((Progression p) =>
+          GestureDetector(
+            onTap: () => Navigator.of(context).pop(exercise),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.blue,
+                    child: Text('${p.rank + 1}'),
+                  ),
+                  SizedBox(width: 16),
+                  Text(p.name),
+                ],
+              ),
+            ),
+          )).toList();
+    }
+
+    return ExpansionTile(
+      title: Text(
+        exercise.name,
+        style: TextStyle(fontSize: 20),
+      ),
       children: [
-        ListTile(
-          title: Text(exercise.name),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _createProgressionsList(exercise.progressions),
-          ),
-          onTap: () => Navigator.of(context).pop(exercise),
-        ),
-        Divider(),
+        ..._createProgressionsList(exercise.progressions),
+        SizedBox(height: 16),
       ],
     );
   }

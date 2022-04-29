@@ -70,7 +70,6 @@ class _ExercisesListState extends State<ExercisesList> {
         title: Text('Exercises'),
       ),
       body: ListView.builder(
-        padding: EdgeInsets.symmetric(vertical: 8.0),
         itemCount: exercises.length,
         itemBuilder: (context, index) => ExerciseListItem(
             exercise: exercises[index], updateExercise: _upsertExercise),

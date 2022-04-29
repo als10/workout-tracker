@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:workout_tracker/models/Exercise.dart';
 import 'package:workout_tracker/models/ExerciseSet.dart';
 
@@ -60,7 +61,13 @@ class _ProgressionSetInputState extends State<ProgressionSetInput> {
           child: TextFormField(
             keyboardType: TextInputType.number,
             controller: _repsController,
-            maxLength: 2,
+            inputFormatters: [LengthLimitingTextInputFormatter(2)],
+            textAlign: TextAlign.center,
+            decoration: InputDecoration(
+              isDense: true,
+              contentPadding: EdgeInsets.all(6),
+              border: OutlineInputBorder(),
+            ),
             onChanged: (String? v) { if (v != null) set.reps = int.parse(v); },
             validator: (String? v) {
               if (v == null || v.isEmpty || int.parse(v) == 0) {
@@ -70,13 +77,14 @@ class _ProgressionSetInputState extends State<ProgressionSetInput> {
             },
           ),
         ),
+        SizedBox(width: 4),
         Text('reps'),
         if (widget.delete != null)
           Padding(
             padding: EdgeInsets.only(left: 4),
             child: IconButton(
               onPressed: () => widget.delete!(),
-              icon: Icon(Icons.remove),
+              icon: Icon(Icons.highlight_remove),
             ),
           ),
       ],

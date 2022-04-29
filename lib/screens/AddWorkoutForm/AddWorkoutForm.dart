@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:workout_tracker/models/Exercise.dart';
 import 'package:workout_tracker/models/ExerciseSet.dart';
 import 'package:workout_tracker/models/Workout.dart';
@@ -84,13 +85,11 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
     PageController controller = PageController();
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
-        elevation: 0,
         title: Row(
           children: [
             IconButton(
-              icon: Icon(Icons.close, color: Colors.black45),
+              icon: Icon(Icons.close),
               onPressed: () => Navigator.of(context).pop(),
             ),
             IconButton(
@@ -99,7 +98,6 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
             ),
             Text(
               DateFormat('h:mm a, d MMM').format(workout.dateTime),
-              style: TextStyle(color: Colors.black)
             ),
             Spacer(),
             IconButton(
@@ -116,34 +114,47 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
           children: _getExercises(),
         ),
       ),
+      resizeToAvoidBottomInset: false,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Padding(
         padding: EdgeInsets.all(16),
-        child: Row(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            if (workout.sets.length > 1)
-              ElevatedButton.icon(
-                onPressed: () => setState(() => workout.sets.removeAt(controller.page!.toInt())),
-                icon: Icon(Icons.delete),
-                label: Text('Remove Exercise'),
-              ),
-            Spacer(),
-            ElevatedButton.icon(
-              onPressed: () async {
-                Exercise? selectedExercise =
-                await _navigateToChooseExercise(context);
-                if (selectedExercise != null) {
-                  setState(() {
-                    workout.sets.add(ExerciseSet(
-                        exercise: selectedExercise,
-                        sets: [ProgressionSet.empty()]));
-                    controller.jumpToPage(workout.sets.length);
-                  });
-                }
-              },
-              icon: Icon(Icons.add),
-              label: Text('Add Exercise'),
+            Row(
+              children: [
+                if (workout.sets.length > 1)
+                  ElevatedButton.icon(
+                    onPressed: () => setState(() => workout.sets.removeAt(controller.page!.toInt())),
+                    icon: Icon(Icons.delete),
+                    label: Text('Remove Exercise'),
+                  ),
+                Spacer(),
+                ElevatedButton.icon(
+                  onPressed: () async {
+                    Exercise? selectedExercise =
+                    await _navigateToChooseExercise(context);
+                    if (selectedExercise != null) {
+                      setState(() {
+                        workout.sets.add(ExerciseSet(
+                            exercise: selectedExercise,
+                            sets: [ProgressionSet.empty()]));
+                        controller.jumpToPage(workout.sets.length);
+                      });
+                    }
+                  },
+                  icon: Icon(Icons.add),
+                  label: Text('Add Exercise'),
+                ),
+              ],
             ),
+            SizedBox(height: 8),
+            SmoothPageIndicator(
+              controller: controller,
+              count:  workout.sets.length,
+              effect:  WormEffect(activeDotColor: Colors.blue),
+              onDotClicked: (int i) => controller.jumpToPage(i),
+            )
           ],
         ),
       )

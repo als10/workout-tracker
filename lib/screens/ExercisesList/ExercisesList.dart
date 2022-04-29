@@ -41,24 +41,31 @@ class _ExercisesListState extends State<ExercisesList> {
     _showSnackBar(context: context, message: 'Exercise added');
   }
 
-  void _deleteExercise(Exercise exercise) async {
-    int index = exercises.indexOf(exercise);
-    setState(() => exercises.remove(exercise));
-    _showSnackBar(
+  Future<void> _deleteExercise(Exercise exercise) async {
+    await dbHelper.deleteExercise(exercise);
+  }
+
+  Future<bool?> _confirmDelete(BuildContext context) async {
+    return showDialog<bool>(
       context: context,
-      message: 'Deleting exercise...',
-      action: new SnackBarAction(
-        label: 'UNDO',
-        onPressed: () {
-          setState(() => exercises.insert(index, exercise));
-        },
-      ),
-      handleOnDismissed: (reason) async {
-        if (reason != SnackBarClosedReason.action) {
-          await dbHelper.deleteExercise(exercise);
-          _showSnackBar(context: context, message: 'Exercise deleted');
-        }
-      });
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete'),
+          content: Text('Are you sure you want to delete this exercise?\n\nWARNING: Any workout sets using this exercise will also be deleted.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            TextButton(
+              child: Text('Delete'),
+              onPressed: () => Navigator.of(context).pop(true),
+            )
+          ],
+        );
+      },
+    );
   }
 
   void _navigateToAddExercise(BuildContext context) {
@@ -93,7 +100,30 @@ class _ExercisesListState extends State<ExercisesList> {
       body: ListView.builder(
         itemCount: exercises.length,
         itemBuilder: (context, index) => ExerciseListItem(
-            exercise: exercises[index], updateExercise: _upsertExercise, deleteExercise: _deleteExercise),
+          exercise: exercises[index],
+          updateExercise: _upsertExercise,
+          deleteExercise: () async {
+            Exercise exercise = exercises[index];
+            if ((await _confirmDelete(context)) ?? false) {
+              setState(() => exercises.remove(exercise));
+              _showSnackBar(
+                context: context,
+                message: 'Deleted exercise',
+                action: new SnackBarAction(
+                  label: 'UNDO',
+                  onPressed: () {
+                    setState(() => exercises.insert(index, exercise));
+                  },
+                ),
+                handleOnDismissed: (reason) async {
+                  if (reason != SnackBarClosedReason.action) {
+                    await _deleteExercise(exercise);
+                  }
+                },
+              );
+            }
+          },
+        ),
       ),
       floatingActionButton: Padding(
           padding: EdgeInsets.all(16.0),

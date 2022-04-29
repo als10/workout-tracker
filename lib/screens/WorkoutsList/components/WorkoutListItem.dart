@@ -10,10 +10,12 @@ import 'SetListItem.dart';
 class WorkoutListItem extends StatelessWidget {
   final Workout workout;
   final Function updateWorkout;
+  final Function deleteWorkout;
 
   WorkoutListItem({
     required this.workout,
     required this.updateWorkout,
+    required this.deleteWorkout,
   });
 
   void _navigateToUpdateWorkout(BuildContext context) {
@@ -33,14 +35,23 @@ class WorkoutListItem extends StatelessWidget {
         style: TextStyle(fontSize: 20),
       ),
       children: [
-        ...workout.sets
-          .map((ExerciseSet set) =>
-            SetListItem(
-              set: set,
-              navigate: () => _navigateToUpdateWorkout(context)
-            )
-          ).toList(),
-        SizedBox(height: 8),
+        ...workout.sets.map((ExerciseSet set) => SetListItem(set: set)).toList(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            TextButton.icon(
+              onPressed: () => _navigateToUpdateWorkout(context),
+              icon: Icon(Icons.edit),
+              label: Text('Edit')
+            ),
+            TextButton.icon(
+              onPressed: () => deleteWorkout(),
+              icon: Icon(Icons.delete),
+              label: Text('Delete')
+            ),
+          ],
+        ),
+        SizedBox(height: 16),
       ],
     );
   }

@@ -18,29 +18,6 @@ class ExerciseListItem extends StatelessWidget {
     ));
   }
 
-  Future<bool?> _confirmDelete(BuildContext context) async {
-    return showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Delete'),
-          content: Text('Are you sure you want to delete this exercise?\nWARNING: All workouts using this exercise will also be deleted.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () => Navigator.of(context).pop(false),
-            ),
-            TextButton(
-              child: Text('Delete'),
-              onPressed: () => Navigator.of(context).pop(true),
-            )
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     List<Widget> _createProgressionsList(List<Progression> progressions) {
@@ -82,11 +59,9 @@ class ExerciseListItem extends StatelessWidget {
               label: Text('Edit')
             ),
             TextButton.icon(
-                onPressed: () async {
-                  if ((await _confirmDelete(context)) ?? false) deleteExercise(exercise);
-                },
-                icon: Icon(Icons.delete),
-                label: Text('Delete')
+              onPressed: () => deleteExercise(),
+              icon: Icon(Icons.delete),
+              label: Text('Delete')
             ),
           ],
         ),

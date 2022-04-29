@@ -209,46 +209,30 @@ class _WorkoutsListState extends State<WorkoutsList> {
               ),
             ),
             content: Column(
-              children: workouts.map((Workout workout) {
-                return Dismissible(
-                  confirmDismiss: (direction) => _confirmDelete(context),
-                  direction: DismissDirection.endToStart,
-                  key: Key(workout.id.toString()),
-                  onDismissed: (direction) {
-                    setState(() {
-                      workouts.removeAt(index);
-                    });
-                    _showSnackBar(
-                        context: context,
-                        message: 'Deleted workout',
-                        action: new SnackBarAction(
-                          label: 'UNDO',
-                          onPressed: () {
-                            setState(() => workouts.insert(index, workout));
-                          },
-                        ),
-                        handleOnDismissed: (reason) async {
-                          if (reason != SnackBarClosedReason.action) {
-                            await _deleteWorkout(workout);
-                            _showSnackBar(context: context, message: 'Workout deleted');
-                          }
-                        });
-                  },
-                  background: Container(
-                    alignment: AlignmentDirectional.centerEnd,
-                    color: Colors.red,
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(0.0, 0.0, 16.0, 0.0),
-                      child: Icon(
-                        Icons.delete,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  child: WorkoutListItem(
-                      workout: workout, updateWorkout: _upsertWorkout),
-                );
-              }).toList(),
+              children: workouts.map((Workout workout) =>
+                  WorkoutListItem(
+                    workout: workout,
+                    updateWorkout: _upsertWorkout,
+                    deleteWorkout: () async {
+                      if ((await _confirmDelete(context)) ?? false) {
+                        _showSnackBar(
+                            context: context,
+                            message: 'Deleted workout',
+                            action: new SnackBarAction(
+                              label: 'UNDO',
+                              onPressed: () {
+                                setState(() => workouts.insert(index, workout));
+                              },
+                            ),
+                            handleOnDismissed: (reason) async {
+                              if (reason != SnackBarClosedReason.action) {
+                                await _deleteWorkout(workout);
+                              }
+                            });
+                      }
+                    },
+                  )
+              ).toList(),
             ),
           );
         },

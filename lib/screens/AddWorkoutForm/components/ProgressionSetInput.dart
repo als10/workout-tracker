@@ -34,7 +34,11 @@ class _ProgressionSetInputState extends State<ProgressionSetInput> {
 
     return Row(
       children: [
-        Text('SET ${widget.index + 1}'),
+        CircleAvatar(
+          backgroundColor: Colors.blue,
+          child: Text('${widget.index + 1}'),
+          radius: 12,
+        ),
         Spacer(),
         DropdownButton<int>(
           value: set.id,

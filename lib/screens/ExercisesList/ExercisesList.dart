@@ -41,6 +41,26 @@ class _ExercisesListState extends State<ExercisesList> {
     _showSnackBar(context: context, message: 'Exercise added');
   }
 
+  void _deleteExercise(Exercise exercise) async {
+    int index = exercises.indexOf(exercise);
+    setState(() => exercises.remove(exercise));
+    _showSnackBar(
+      context: context,
+      message: 'Deleting exercise...',
+      action: new SnackBarAction(
+        label: 'UNDO',
+        onPressed: () {
+          setState(() => exercises.insert(index, exercise));
+        },
+      ),
+      handleOnDismissed: (reason) async {
+        if (reason != SnackBarClosedReason.action) {
+          await dbHelper.deleteExercise(exercise);
+          _showSnackBar(context: context, message: 'Exercise deleted');
+        }
+      });
+  }
+
   void _navigateToAddExercise(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (_) => AddExerciseForm(
@@ -73,7 +93,7 @@ class _ExercisesListState extends State<ExercisesList> {
       body: ListView.builder(
         itemCount: exercises.length,
         itemBuilder: (context, index) => ExerciseListItem(
-            exercise: exercises[index], updateExercise: _upsertExercise),
+            exercise: exercises[index], updateExercise: _upsertExercise, deleteExercise: _deleteExercise),
       ),
       floatingActionButton: Padding(
           padding: EdgeInsets.all(16.0),

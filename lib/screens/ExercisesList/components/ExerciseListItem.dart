@@ -5,8 +5,9 @@ import 'package:workout_tracker/screens/AddExerciseForm/AddExerciseForm.dart';
 class ExerciseListItem extends StatelessWidget {
   final Exercise exercise;
   final Function updateExercise;
+  final Function deleteExercise;
 
-  ExerciseListItem({required this.exercise, required this.updateExercise});
+  ExerciseListItem({required this.exercise, required this.updateExercise, required this.deleteExercise});
 
   void _navigateToUpdateExercise(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
@@ -15,6 +16,29 @@ class ExerciseListItem extends StatelessWidget {
         exercise: exercise,
       ),
     ));
+  }
+
+  Future<bool?> _confirmDelete(BuildContext context) async {
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete'),
+          content: Text('Are you sure you want to delete this exercise?\nWARNING: All workouts using this exercise will also be deleted.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            TextButton(
+              child: Text('Delete'),
+              onPressed: () => Navigator.of(context).pop(true),
+            )
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -57,7 +81,9 @@ class ExerciseListItem extends StatelessWidget {
               label: Text('Edit')
             ),
             TextButton.icon(
-                onPressed: () => _navigateToUpdateExercise(context),
+                onPressed: () async {
+                  if ((await _confirmDelete(context)) ?? false) deleteExercise(exercise);
+                },
                 icon: Icon(Icons.delete),
                 label: Text('Delete')
             ),

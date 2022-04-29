@@ -24,12 +24,58 @@ class AddExerciseFormState extends State<AddExerciseForm> {
     super.initState();
   }
 
-  void _save(context) {
-    if (_formKey.currentState!.validate()) {
+  void _save(context) async {
+    if (_formKey.currentState!.validate() && ((await _confirmSave(context)) ?? false)) {
       exercise.updateRanks();
-      widget.upsert(exercise);
+      await widget.upsert(exercise);
       Navigator.of(context).pop();
     }
+  }
+
+  Future<bool?> _confirmClose(BuildContext context) async {
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Are you sure?'),
+          content: Text('The current workout will be discarded.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            ElevatedButton(
+              child: Text('Discard'),
+              onPressed: () => Navigator.of(context).pop(true),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  Future<bool?> _confirmSave(BuildContext context) async {
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Warning'),
+          content: Text('Workouts associated with any deleted progressions will be deleted.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            ElevatedButton(
+              child: Text('Save'),
+              onPressed: () => Navigator.of(context).pop(true),
+            )
+          ],
+        );
+      },
+    );
   }
 
   Widget _exerciseInput() {
@@ -62,6 +108,15 @@ class AddExerciseFormState extends State<AddExerciseForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: Icon(Icons.close),
+          onPressed: () async {
+            if ((await _confirmClose(context)) ?? false) {
+              Navigator.of(context).pop();
+            }
+          },
+        ),
         title: Text('Add Exercise'),
         actions: [
           IconButton(

@@ -62,6 +62,29 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
     }
   }
 
+  Future<bool?> _confirmClose(BuildContext context) async {
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Are you sure?'),
+          content: Text('The current workout will be discarded.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            ElevatedButton(
+              child: Text('Discard'),
+              onPressed: () => Navigator.of(context).pop(true),
+            )
+          ],
+        );
+      },
+    );
+  }
+
   Future<Exercise?> _navigateToChooseExercise(BuildContext context) async {
     return await Navigator.of(context)
         .push(MaterialPageRoute(builder: (_) => ExercisesList()));
@@ -90,7 +113,9 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
           children: [
             IconButton(
               icon: Icon(Icons.close),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () async {
+                if ((await _confirmClose(context)) ?? false) Navigator.of(context).pop();
+              },
             ),
             IconButton(
               icon: Icon(Icons.calendar_today_rounded, color: Colors.blue),

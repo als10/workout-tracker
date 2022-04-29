@@ -32,13 +32,16 @@ class WorkoutListItem extends StatelessWidget {
         DateFormat('h:mm a').format(workout.dateTime),
         style: TextStyle(fontSize: 20),
       ),
-      children: workout.sets
+      children: [
+        ...workout.sets
           .map((ExerciseSet set) =>
             SetListItem(
               set: set,
               navigate: () => _navigateToUpdateWorkout(context)
             )
           ).toList(),
+        SizedBox(height: 8),
+      ],
     );
   }
 }

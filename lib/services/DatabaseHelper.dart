@@ -52,6 +52,7 @@ class DatabaseHelper {
       onCreate: _createTables,
       version: 1,
     );
+    await this.db.execute('PRAGMA foreign_keys = ON');
   }
 
   Future<List<Workout>> fetchWorkouts() async {

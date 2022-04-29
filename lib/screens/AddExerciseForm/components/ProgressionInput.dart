@@ -105,7 +105,7 @@ class ProgressionInput extends StatelessWidget {
           ),
           if (deleteProgression != null)
             IconButton(
-              icon: Icon(Icons.highlight_remove),
+              icon: Icon(Icons.highlight_remove, color: Colors.black45),
               onPressed: () => deleteProgression!(),
             ),
         ],

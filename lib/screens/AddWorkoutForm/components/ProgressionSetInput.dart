@@ -36,21 +36,21 @@ class _ProgressionSetInputState extends State<ProgressionSetInput> {
       children: [
         Text('SET ${widget.index + 1}'),
         Spacer(),
-        DropdownButton<String>(
-          value: set.id.toString(),
+        DropdownButton<int>(
+          value: set.id,
           icon: Icon(Icons.arrow_drop_down),
-          elevation: 16,
+          elevation: 0,
           style: TextStyle(color: Colors.blueAccent),
-          onChanged: (String? v) {
+          onChanged: (int? v) {
             if (v != null)
               setState(() {
                 set.setProgression(progressions
-                    .firstWhere((Progression p) => p.id == int.parse(v)));
+                    .firstWhere((Progression p) => p.id == v));
               });
           },
           items: progressions.map((Progression p) {
             return DropdownMenuItem(
-              value: p.id.toString(),
+              value: p.id,
               child: Text(p.name),
             );
           }).toList(),
@@ -84,7 +84,7 @@ class _ProgressionSetInputState extends State<ProgressionSetInput> {
             padding: EdgeInsets.only(left: 4),
             child: IconButton(
               onPressed: () => widget.delete!(),
-              icon: Icon(Icons.highlight_remove),
+              icon: Icon(Icons.highlight_remove, color: Colors.black45),
             ),
           ),
       ],

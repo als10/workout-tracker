@@ -118,7 +118,6 @@ class _WorkoutsListState extends State<WorkoutsList> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         bottom: PreferredSize(
           preferredSize: Size(0, 85),
           child: Column(

@@ -114,7 +114,7 @@ class _ExerciseSetInputState extends State<ExerciseSetInput> {
         ),
         Padding(
           padding: EdgeInsets.only(left: 16),
-          child: ElevatedButton.icon(
+          child: OutlinedButton.icon(
             onPressed: () => setState(() => set.sets.add(ProgressionSet.empty())),
             icon: Icon(Icons.add),
             label: Text('Add set'),

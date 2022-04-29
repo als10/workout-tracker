@@ -48,6 +48,7 @@ class _ProgressionSetInputState extends State<ProgressionSetInput> {
                     .firstWhere((Progression p) => p.id == v));
               });
           },
+          underline: Container(),
           items: progressions.map((Progression p) {
             return DropdownMenuItem(
               value: p.id,
@@ -77,16 +78,21 @@ class _ProgressionSetInputState extends State<ProgressionSetInput> {
             },
           ),
         ),
-        SizedBox(width: 4),
+        SizedBox(width: 8),
         Text('reps'),
-        if (widget.delete != null)
-          Padding(
+        Visibility(
+          child: Padding(
             padding: EdgeInsets.only(left: 4),
             child: IconButton(
               onPressed: () => widget.delete!(),
               icon: Icon(Icons.highlight_remove, color: Colors.black45),
             ),
           ),
+          maintainSize: true,
+          maintainAnimation: true,
+          maintainState: true,
+          visible: widget.delete != null,
+        ),
       ],
     );
   }

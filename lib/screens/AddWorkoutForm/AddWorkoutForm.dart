@@ -152,7 +152,7 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
             SmoothPageIndicator(
               controller: controller,
               count:  workout.sets.length,
-              effect:  WormEffect(activeDotColor: Colors.blue),
+              effect:  WormEffect(activeDotColor: Colors.blue, radius: 8),
               onDotClicked: (int i) => controller.jumpToPage(i),
             )
           ],

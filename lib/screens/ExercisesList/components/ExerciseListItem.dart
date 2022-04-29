@@ -56,6 +56,7 @@ class ExerciseListItem extends StatelessWidget {
                   CircleAvatar(
                     backgroundColor: Colors.blue,
                     child: Text('${p.rank + 1}'),
+                    radius: 12,
                   ),
                   SizedBox(width: 16),
                   Text(p.name),
@@ -66,9 +67,9 @@ class ExerciseListItem extends StatelessWidget {
     }
 
     return ExpansionTile(
-      title: Text(
-        exercise.name,
-        style: TextStyle(fontSize: 20),
+      title: GestureDetector(
+        onTap: () => Navigator.of(context).pop(exercise),
+        child: Text(exercise.name),
       ),
       children: [
         ..._createProgressionsList(exercise.progressions),

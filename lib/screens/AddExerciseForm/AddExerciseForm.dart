@@ -42,7 +42,7 @@ class AddExerciseFormState extends State<AddExerciseForm> {
         ProgressionInputs(progressions: exercise.progressions),
         Padding(
           padding: EdgeInsets.only(left: 16),
-          child: ElevatedButton.icon(
+          child: OutlinedButton.icon(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 setState(() => exercise.progressions.add(Progression.empty(

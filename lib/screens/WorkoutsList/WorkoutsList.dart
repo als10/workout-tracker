@@ -150,36 +150,35 @@ class _WorkoutsListState extends State<WorkoutsList> {
                   ],
                 ),
               ),
-              Timeline.DatePicker(
-                workouts.length == 0 ? DateTime.now() : workouts[workouts.length - 1].dateTime,
-                initialSelectedDate: DateTime.now(),
-                controller: datePickerController,
-                selectionColor: Colors.blue,
-                selectedTextColor: Colors.white,
-                daysCount: workouts.length == 0
-                  ? 1
-                  : (workouts[0].dateTime
+              if (workouts.length > 0)
+                Timeline.DatePicker(
+                  workouts[workouts.length - 1].dateTime,
+                  initialSelectedDate: DateTime.now(),
+                  controller: datePickerController,
+                  selectionColor: Colors.blue,
+                  selectedTextColor: Colors.white,
+                  daysCount: (workouts[0].dateTime
                     .difference(workouts[workouts.length - 1].dateTime).inHours / 24)
                     .round() + 1,
-                onDateChange: (date) {
-                  setState(() {
-                    int index;
-                    List<DateTime> dates = [date];
-                    do {
-                      date = dates.removeAt(0);
-                      String formattedDate = DateFormat('MMMM d').format(date).toUpperCase();
-                      index = formattedWorkouts.indexWhere((m) => m['date'] == formattedDate);
-                      dates.add(date.add(Duration(days: 1)));
-                      dates.add(date.subtract(Duration(days: 1)));
-                    } while (index == -1);
-                    itemScrollController.scrollTo(
-                      index: index,
-                      duration: Duration(seconds: 1),
-                      curve: Curves.easeInOutCubic
-                    );
-                  });
-                },
-              ),
+                  onDateChange: (date) {
+                    setState(() {
+                      int index;
+                      List<DateTime> dates = [date];
+                      do {
+                        date = dates.removeAt(0);
+                        String formattedDate = DateFormat('MMMM d').format(date).toUpperCase();
+                        index = formattedWorkouts.indexWhere((m) => m['date'] == formattedDate);
+                        dates.add(date.add(Duration(days: 1)));
+                        dates.add(date.subtract(Duration(days: 1)));
+                      } while (index == -1);
+                      itemScrollController.scrollTo(
+                        index: index,
+                        duration: Duration(seconds: 1),
+                        curve: Curves.easeInOutCubic
+                      );
+                    });
+                  },
+                ),
             ],
           ),
         ),

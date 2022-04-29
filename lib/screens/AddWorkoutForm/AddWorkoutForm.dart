@@ -164,7 +164,11 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
                         workout.sets.add(ExerciseSet(
                             exercise: selectedExercise,
                             sets: [ProgressionSet.empty()]));
-                        controller.jumpToPage(workout.sets.length);
+                        controller.animateToPage(
+                          workout.sets.length,
+                          duration: Duration(seconds: 1),
+                          curve: Curves.easeIn,
+                        );
                       });
                     }
                   },
@@ -178,7 +182,9 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
               controller: controller,
               count:  workout.sets.length,
               effect:  WormEffect(activeDotColor: Colors.blue, radius: 8),
-              onDotClicked: (int i) => controller.jumpToPage(i),
+              onDotClicked: (int i) => controller.animateToPage(
+                i, duration: Duration(seconds: 1), curve: Curves.easeIn,
+              ),
             )
           ],
         ),

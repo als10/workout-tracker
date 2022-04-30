@@ -4,6 +4,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:workout_tracker/models/Exercise.dart';
 import 'package:workout_tracker/models/ExerciseSet.dart';
+import 'package:workout_tracker/models/Stats.dart';
 import 'package:workout_tracker/models/Workout.dart';
 
 class DatabaseHelper {
@@ -192,5 +193,18 @@ class DatabaseHelper {
     await db
         .delete('progressions', where: 'id = ?', whereArgs: [progression.id]);
     return true;
+  }
+  
+  Future<List<RepsDate>> fetchStats({int? exerciseId, int? progressionId}) async {
+    String baseQuery(String otherWhereClause) => '''
+      SELECT SUM(reps) as reps, strftime("%d-%m-%Y", dateTime) as dateTime
+      FROM sets, workouts
+      WHERE workoutId = workouts.id $otherWhereClause
+      GROUP BY strftime("%d-%m-%Y", dateTime) 
+    ''';
+    List<Map<String, dynamic>> stats = exerciseId != null
+      ? await db.rawQuery(baseQuery('AND exerciseId = ?'), [exerciseId])
+      : await db.rawQuery(baseQuery('AND progressionId = ?'), [progressionId]);
+    return stats.map((Map<String, dynamic> m) => RepsDate.fromMap(m)).toList();
   }
 }

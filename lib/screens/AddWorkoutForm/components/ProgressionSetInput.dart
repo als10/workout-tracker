@@ -43,7 +43,6 @@ class _ProgressionSetInputState extends State<ProgressionSetInput> {
         DropdownButton<int>(
           value: set.id,
           icon: Icon(Icons.arrow_drop_down),
-          elevation: 0,
           style: TextStyle(color: Colors.blueAccent),
           onChanged: (int? v) {
             if (v != null)

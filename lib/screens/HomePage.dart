@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    currentPage = HISTORY_PAGE;
+    currentPage = STATISTICS_PAGE;
   }
 
   @override

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:workout_tracker/models/Exercise.dart';
+import 'package:workout_tracker/models/Stats.dart';
 import 'package:workout_tracker/services/DatabaseHelper.dart';
+import 'package:collection/collection.dart';
 
 class StatisticsPage extends StatefulWidget {
   StatisticsPage();
@@ -11,8 +14,14 @@ class StatisticsPage extends StatefulWidget {
 
 class _StatisticsPageState extends State<StatisticsPage> {
   late DatabaseHelper dbHelper;
+  final chartKey = GlobalKey<SfCartesianChartState>();
+
   late List<Exercise> exercises;
+  late List<Progression> progressions;
+
   Exercise? selectedExercise;
+  Progression? selectedProgression;
+  Map<String, List<RepsDate>>? stats;
 
   @override
   void initState() {
@@ -26,8 +35,11 @@ class _StatisticsPageState extends State<StatisticsPage> {
     await dbHelper.initializeDB();
     _showSnackBar(context: context, message: 'Fetching exercises...');
     exercises = await dbHelper.fetchExercises();
-    print(exercises);
-    if (exercises.length > 0) selectedExercise = exercises[0];
+    if (exercises.length > 0) {
+      selectedExercise = exercises[0];
+      progressions = selectedExercise!.progressions;
+      await fetchStats();
+    }
     setState(() {});
     _showSnackBar(context: context, message: 'Exercises loaded');
   }
@@ -46,23 +58,33 @@ class _StatisticsPageState extends State<StatisticsPage> {
     });
   }
 
+  Future<void> fetchStats() async {
+    stats = {};
+    stats!['All'] = await dbHelper.fetchStats(exerciseId: selectedExercise!.id);
+    for (Progression p in progressions) {
+      stats![p.name] = await dbHelper.fetchStats(progressionId: p.id);
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (selectedExercise == null) {
+    if (exercises == null || exercises.length == 0) {
       return  Container(child: Center(child: Text('No exercises yet.')));
     } else {
-      List<Progression> progressions = selectedExercise!.progressions;
-      Progression selectedProgression = progressions[0];
       return Scaffold(
         appBar: AppBar(
           title: DropdownButton<int>(
             value: selectedExercise!.id,
             icon: Icon(Icons.arrow_drop_down),
             onChanged: (int? v) {
-              if (v != null)
-                setState(() {
-                  selectedExercise = exercises.firstWhere((Exercise e) => e.id == v);
-                });
+              if (v != null) {
+                selectedExercise =
+                    exercises.firstWhere((Exercise e) => e.id == v);
+                progressions = selectedExercise!.progressions;
+                selectedProgression = null;
+                fetchStats();
+              }
             },
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.blue),
             underline: Container(),
@@ -74,37 +96,41 @@ class _StatisticsPageState extends State<StatisticsPage> {
             }).toList(),
           ),
         ),
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text('Progression:'),
-                  SizedBox(width: 12),
-                  DropdownButton<int>(
-                    value: selectedProgression.id,
-                    icon: Icon(Icons.arrow_drop_down),
-                    onChanged: (int? v) {
-                      if (v != null)
-                        setState(() {
-                          selectedProgression = progressions.firstWhere((Progression p) => p.id == v);
-                        });
-                    },
-                    underline: Container(),
-                    items: progressions.map((Progression p) {
-                      return DropdownMenuItem(
-                        value: p.id,
-                        child: Text(p.name),
-                      );
-                    }).toList(),
-                  )
-                ],
-              ),
-            ],
+        body: stats == null ? Container() : SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Total Reps: ${stats!['All']!.map((e) => e.reps).sum}',
+                  style: TextStyle(fontSize: 18),
+                ),
+                SizedBox(height: 16),
+                Center(
+                  child: SfCartesianChart(
+                    backgroundColor: Colors.white,
+                    legend: Legend(isVisible: true),
+                    primaryXAxis: DateTimeAxis(
+                      majorGridLines: MajorGridLines(width: 0),
+                      edgeLabelPlacement: EdgeLabelPlacement.shift,
+                      intervalType: DateTimeIntervalType.days,
+                    ),
+                    series: stats!.map((String pname, List<RepsDate> statList) =>
+                      MapEntry(
+                        pname,
+                        LineSeries<RepsDate, DateTime>(
+                          dataSource: statList,
+                          xValueMapper: (RepsDate x, _) => x.dateTime,
+                          yValueMapper: (RepsDate x, _) => x.reps,
+                          name: pname,
+                        )
+                      )
+                    ).values.toList(),
+                  ),
+                ),
+              ],
+            ),
           ),
         )
       );

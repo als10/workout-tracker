@@ -1,17 +1,13 @@
 # Workout Tracker
 
 ## Description
-A mobile app to track all your workouts!
+A mobile app that helps you track the statistics from all your bodyweight workouts. Simply put in the details of your workouts and have them saved on your phone. Designed specifically for bodyweight workouts, the app allows you to create and select specific progressions for each exercise.
 
-## Demo
+## Demonstration
 <img src="demo.gif" width="420"/>
 
-## Installation
-In order to run this application on your local device, you have to follow the instructions to [download and set up Flutter.](https://flutter.dev/docs/get-started/install)
+## Built With
+- Flutter
+- SQLite
 
-## Usage
-Once Flutter is installed, you may run the app using the ```flutter run``` command from the root of the project.
-
-## Future Improvements
-1. Allow users to view detailed statistics about all the sets of exercises performed, which may be presented in a graph. 
-2. Improve the UI. 
+<a href='https://play.google.com/store/apps/details?id=com.alstondmello.workout_tracker&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img style='height: 96px' alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>

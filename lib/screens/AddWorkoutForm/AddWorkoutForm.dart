@@ -69,7 +69,7 @@ class AddWorkoutFormState extends State<AddWorkoutForm> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Are you sure?'),
-          content: Text('The current workout will be discarded.'),
+          content: Text('Any changes will be discarded.'),
           actions: <Widget>[
             TextButton(
               child: Text('Cancel'),
